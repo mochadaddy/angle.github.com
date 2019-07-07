@@ -32,15 +32,17 @@ for i in range(0, stock_num):
         frames = [df2, df1]
         frames_result = pd.concat(frames)
         df = frames_result.sort_values('trade_date', ascending=True)
-        df = df.sort_values('trade_date', ascending=True)
+        # df = df.sort_values('trade_date', ascending=True)
         for ma in ma_list:
             df['MA_' + str(ma)] = df['close'].rolling(window=ma, center=False, ).mean()
         # print (df)
-        pd.DataFrame.to_csv(df, targetdir + os.sep + stock_code + '.csv',  encoding='gbk')
+        df_new = df.reset_index(drop=True)
+        pd.DataFrame.to_csv(df_new, targetdir + os.sep + stock_code + '.csv',  encoding='gbk')
     else:
         df = df.sort_values('trade_date', ascending=True)
         for ma in ma_list:
             df['MA_' + str(ma)] = df['close'].rolling(window=ma, center=False, ).mean()
-        pd.DataFrame.to_csv(df, targetdir + os.sep + stock_code + '.csv', encoding='gbk')
+        df_new = df.reset_index(drop=True)
+        pd.DataFrame.to_csv(df_new, targetdir + os.sep + stock_code + '.csv', encoding='gbk')
 
     #pd.DataFrame.to_csv(df, targetdir + os.sep + '000001.csv',  encoding='gbk')
