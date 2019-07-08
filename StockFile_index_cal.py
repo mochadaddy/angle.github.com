@@ -4,7 +4,7 @@ import pandas as pd
 import os
 
 
-token = ts.set_token('71a5947e1d01e9b5c5275f2de127101940acd4cdb44cc2aad9c7e7cd')
+token = ts.set_token()
 targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/'
 startdate = '19910101'
 enddate = '20190705'
