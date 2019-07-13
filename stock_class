@@ -6,7 +6,7 @@ import stock_class as sc
 
 # 取tushare的token并连接api
 def get_tocken():
-    token = ts.set_token('71a5947e1d01e9b5c5275f2de127101940acd4cdb44cc2aad9c7e7cd')
+    token = ts.set_token('')
     pro = ts.pro_api(token)
     return pro
 
