@@ -11,8 +11,9 @@ import numpy as np
 pro = sc.get_tocken()
 yestorday = sc.get_sys_date()
 targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_week'
-read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_nhsy/nhsy.csv'
+read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return/nhsy.csv'
 
+'''
 stock_list = pd.read_csv(read_dir, usecols=['ts_code', 'year_annual_return'])
 stock_list_5 = stock_list[stock_list['year_annual_return'] >= 10]
 #print stock_list_5
@@ -31,4 +32,17 @@ for i in range(0, stock_num):
     df_new.loc[mask < 0, 'flag'] = 0
     pd.DataFrame.to_csv(df_new, targetdir + os.sep + stock_code + '.csv', encoding='gbk')
 
+    #print mask_num
+'''
+read_dir_sz_week = 'D:/Program Files/tdx/vipdoc/sz/sz_week'
+read_dir_files = os.listdir(read_dir_sz_week)
+for stock_file in read_dir_files:
+    df1 = pd.read_csv(read_dir_sz_week + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'close', 'ma5', 'flag'])
+    day_trade_num = df1.shape[0]
+    for j in range(0, day_trade_num):
+        if df1.iloc[j]['close'] == df1.iloc[j]['ma5']:
+           print df1.iloc[j-1]['flag']
+           value_temp = df1.iloc[j-1]['flag'].copy()
+           df1.iloc[j]['flag'] = value_temp
+           print df1.iloc[j]['flag']
 
