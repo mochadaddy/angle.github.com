@@ -21,7 +21,7 @@ stock_list_5 = stock_list[stock_list['year_annual_return'] >= 10]
 
 stock_num = stock_list_5.shape[0]
 for i in range(0, stock_num):
-    stock_code = stock_list.iloc[i]['ts_code']
+    stock_code = stock_list_5.iloc[i]['ts_code']
     df = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date='19910101', end_date=yestorday, ma=[5])
     df_aes = df.sort_values('trade_date', ascending=True)
     df_new = df_aes.reset_index(drop=True)
