@@ -35,5 +35,3 @@ for stock_file in read_dir_files:
                     df.ix[i, 'money_cal'] = df.ix[j, 'money_cal'] * return_rate + df.ix[j, 'money_cal']
 
     pd.DataFrame.to_csv(df, target_dir + os.sep + stock_file, encoding='gbk')
-
-

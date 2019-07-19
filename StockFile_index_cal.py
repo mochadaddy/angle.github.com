@@ -60,6 +60,3 @@ for i in range(0, stock_num):
 
 
 
-    
-
-      

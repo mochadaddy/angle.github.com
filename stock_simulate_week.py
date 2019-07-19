@@ -19,7 +19,7 @@ read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return/nhsy.csv'
 read_dir_week = 'D:/Program Files/tdx/vipdoc/sz/sz_week'
 target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_simulate'
 stock_list = pd.read_csv(read_dir, usecols=['ts_code', 'year_annual_return'])
-stock_list_5 = stock_list[stock_list['year_annual_return'] >= 9.9]
+stock_list_5 = stock_list[stock_list['year_annual_return'] >= 10]
 
 stock_num = stock_list_5.shape[0]
 for i in range(0, stock_num):
@@ -44,7 +44,6 @@ for i in range(0, stock_num):
                 row_num = row_num - 1
             ma5 = round(week_ma_5/5, 2)
             row_num = df_union_new.shape[0]
-            #df_union_new['ma5'].fillna(value=ma5, inplace=True)
             df_union_new.at[row_num-1, 'ma5'] = ma5
             mask = df_union_new.iloc[row_num - 1]['close'] - df_union_new.iloc[row_num - 1]['ma5']
             if mask > 0:
@@ -53,5 +52,8 @@ for i in range(0, stock_num):
                 df_union_new.at[row_num - 1, 'flag'] = 0
             else:
                 continue
+            if (df_union_new.iloc[row_num - 1]['flag'] == 1) and (df_union_new.iloc[row_num - 2]['flag'] == 0):
+                print stock_code
+
             pd.DataFrame.to_csv(df_union_new, target_dir + os.sep + stock_code + '.csv', encoding='gbk')
 

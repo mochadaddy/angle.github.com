@@ -56,7 +56,6 @@ for stock_file in szlistfile:
                 print code
                 print annual_return_tmp
 
-pd.DataFrame.to_csv(stock_analyse_capital, targetdir + os.sep + sys_day + 'nhsy.csv', encoding='gbk')
+pd.DataFrame.to_csv(stock_analyse_capital, targetdir + os.sep + 'nhsy.csv', encoding='gbk')
 
 
-    
