@@ -1,4 +1,8 @@
 # coding: utf-8
+'''
+计算从上市日到去年年底的股票年化收益率
+
+'''
 import tushare as ts
 import pandas as pd
 import os
@@ -7,6 +11,7 @@ import stock_class as sc
 
 
 pro = sc.get_tocken()
+sys_day = sc.get_sys_date()
 # stock_list = pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
 stock_list_sz = sc.get_sz_stock()
 stock_sz_num = stock_list_sz.shape[0]
@@ -19,7 +24,7 @@ j = 0
 for stock_file in szlistfile:
     # print stock_file
     df = pd.read_csv(szpathdir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'open', 'close', 'pct_chg',
-                                                               'vol', 'amount', 'MA_5', 'MA_10', 'MA_20'])
+                                                               'vol', 'amount', 'MA_5', 'MA_10', 'MA_250'])
 
     end_date = '20181228'
     start_date = df.iloc[0]['trade_date']
@@ -40,7 +45,7 @@ for stock_file in szlistfile:
             date_str_2018_q4 = date_str_2018[0:4]
             if (date_str_2019_q4 == '2019') and (date_str_2018_q4 == '2018'):
                 code = df.iloc[i]['ts_code']
-                close_2018 = df.iloc[i - 1]['close']
+                close_2018 = df.iloc[i - 1]['MA_250']
                 annual_return = (close_2018 - start_date_close) / year_num
                 annual_return_tmp = round(annual_return, 2)
                 # df.loc[i - 1, 'annual_return'] = annual_return_tmp
@@ -51,6 +56,7 @@ for stock_file in szlistfile:
                 print code
                 print annual_return_tmp
 
-pd.DataFrame.to_csv(stock_analyse_capital, targetdir + os.sep + 'nhsy.csv', encoding='gbk')
+pd.DataFrame.to_csv(stock_analyse_capital, targetdir + os.sep + sys_day + 'nhsy.csv', encoding='gbk')
 
 
+    
