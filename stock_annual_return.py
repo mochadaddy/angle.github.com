@@ -20,23 +20,43 @@ stock_analyse_capital = pd.DataFrame(index=range(0, stock_sz_num), columns=['ts_
 targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return'
 szpathdir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare'
 szlistfile = os.listdir(szpathdir)
+file_count = 0
 j = 0
 for stock_file in szlistfile:
     # print stock_file
+    file_count = file_count + 1
     df = pd.read_csv(szpathdir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'open', 'close', 'pct_chg',
                                                                'vol', 'amount', 'MA_5', 'MA_10', 'MA_250'])
 
-    end_date = '20181228'
-    start_date = df.iloc[0]['trade_date']
-    start_date_close = df.iloc[0]['close']
-    start_date_int = int(start_date)
-    start_date_str = str(start_date_int)
-    end_date_q4 = end_date[0:4]
-    start_date_str_q4 = start_date_str[0:4]
-    year_num = int(end_date_q4) - int(start_date_str_q4)
+    #end_date = '20181228'
+    #start_date = df.iloc[0]['trade_date']
+    #start_date_close = df.iloc[0]['close']
+    #start_date_int = int(start_date)
+    #start_date_str = str(start_date_int)
+    #end_date_q4 = end_date[0:4]
+    #start_date_str_q4 = start_date_str[0:4]
+    #year_num = int(end_date_q4) - int(start_date_str_q4)
     row_num = df.shape[0]
     if row_num >= 500:
+        year_num = round(row_num / 250, 2)
+        return_sum = df.iloc[row_num - 1]['close'] - df.iloc[0]['close']
+        annual_return = round(return_sum / df.iloc[0]['close']/year_num, 2)
+        code = df.iloc[0]['ts_code']
+        end_date = df.ix[row_num-1, 'trade_date']
+        #print (code, end_date, annual_return, return_sum, row_num, year_num,)
+        stock_analyse_capital.at[stock_analyse_capital.index[j], 'ts_code'] = code
+        stock_analyse_capital.at[stock_analyse_capital.index[j], 'year'] = end_date
+        stock_analyse_capital.at[stock_analyse_capital.index[j], 'year_annual_return'] = annual_return
+        j = j + 1
+pd.DataFrame.to_csv(stock_analyse_capital, targetdir + os.sep + 'nhsy.csv', encoding='gbk')
+'''
         for i in range(0, row_num):
+            
+            
+            
+            
+
+ 
             date_int_2019 = int(df.iloc[i]['trade_date'])
             date_int_2018 = int(df.iloc[i - 1]['trade_date'])
             date_str_2019 = str(date_int_2019)
@@ -49,13 +69,11 @@ for stock_file in szlistfile:
                 annual_return = (close_2018 - start_date_close) / year_num
                 annual_return_tmp = round(annual_return, 2)
                 # df.loc[i - 1, 'annual_return'] = annual_return_tmp
-                stock_analyse_capital.at[stock_analyse_capital.index[j], 'ts_code'] = code
-                stock_analyse_capital.at[stock_analyse_capital.index[j], 'year'] = date_str_2018_q4
-                stock_analyse_capital.at[stock_analyse_capital.index[j], 'year_annual_return'] = annual_return_tmp
+                
                 j = j+1
                 print code
                 print annual_return_tmp
+'''
 
-pd.DataFrame.to_csv(stock_analyse_capital, targetdir + os.sep + 'nhsy.csv', encoding='gbk')
 
 

@@ -16,7 +16,7 @@ targetdir_fill = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fill'
 
 
 stock_list = pd.read_csv(read_dir, usecols=['ts_code', 'year_annual_return'])
-stock_list_5 = stock_list[stock_list['year_annual_return'] >= 10]
+stock_list_5 = stock_list[stock_list['year_annual_return'] > 0]
 #print stock_list_5
 
 stock_num = stock_list_5.shape[0]

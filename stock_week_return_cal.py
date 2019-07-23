@@ -16,6 +16,9 @@ for stock_file in read_dir_files:
     # print row_num
     buy_price = None
     # 算出股票上市至今的时间长度（以年为单位）
+    year_num = round(row_num/52, 2)
+
+    '''
     end_date = '20181228'
     start_date = df.iloc[0]['trade_date']
     start_date_close = df.iloc[0]['close']
@@ -24,6 +27,7 @@ for stock_file in read_dir_files:
     end_date_q4 = end_date[0:4]
     start_date_str_q4 = start_date_str[0:4]
     year_num = int(end_date_q4) - int(start_date_str_q4)
+    '''
     k = 0
     for i in range(0, row_num):
         if np.isnan(df.iloc[i]['ma5']):
@@ -48,6 +52,17 @@ for stock_file in read_dir_files:
                     while pd.isnull(df.iloc[j]['money_cal']):
                         j = j - 1
                     df.ix[i, 'money_cal'] = df.ix[j, 'money_cal'] * return_rate + df.ix[j, 'money_cal']
+                    '''
+                    if k == 1:
+                        max_price = buy_price_init
+                        if df.ix[i, 'money_cal'] > max_price:
+                            max_price = df.ix[i, 'money_cal']
+                    if k == 1:
+                        withdrawal_rate = 1 - (df.ix[i, 'money_cal']/max_price)
+                    max_withdrawal_rate = withdrawal_rate
+                    if max_withdrawal_rate > withdrawal_rate:
+                    '''
+
                     times = round((df.ix[i, 'money_cal']-buy_price_init)/buy_price_init/year_num, 2)
                     times_no_ma5 = round((df.ix[i, 'close']-buy_price_init)/buy_price_init/year_num, 2)
     print (stock_file, times, times_no_ma5)
@@ -57,4 +72,3 @@ for stock_file in read_dir_files:
         n = n + 1
     print (m, n)
     pd.DataFrame.to_csv(df, target_dir + os.sep + stock_file, encoding='gbk')
-    

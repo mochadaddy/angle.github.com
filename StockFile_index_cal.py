@@ -20,7 +20,7 @@ stock_list = sc.get_sz_stock()
 # print stock_list
 stock_num = stock_list.shape[0]
 
-for i in range(0, stock_num):
+for i in range(2044, stock_num):
 
     stock_code = stock_list.iloc[i]['ts_code']
     #print stock_code
