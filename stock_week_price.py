@@ -2,10 +2,10 @@
 import tushare as ts
 import pandas as pd
 import os
+import glob
 import csv
 import stock_class as sc
 import numpy as np
-
 
 # 联接tushare的api接口
 pro = sc.get_tocken()
@@ -13,6 +13,14 @@ yestorday = sc.get_sys_date()
 targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_week'
 read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return/nhsy.csv'
 targetdir_fill = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fill'
+
+fileNames_week = glob.glob(targetdir + r'\*')
+fileNames_week_fill = glob.glob(targetdir_fill + r'\*')
+for fileName in fileNames_week, fileNames_week_fill:
+    try:
+        os.remove(fileName)
+    except:
+        break
 
 
 stock_list = pd.read_csv(read_dir, usecols=['ts_code', 'year_annual_return'])
@@ -45,6 +53,11 @@ for stock_file in read_dir_files:
             # 对flag列根据前值填充当前列的空值
             df1['flag'].fillna(method='ffill', inplace=True)
     pd.DataFrame.to_csv(df1, targetdir_fill + os.sep + stock_file, encoding='gbk')
+
+
+
+
+    
 
 
 
