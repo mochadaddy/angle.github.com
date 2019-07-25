@@ -16,9 +16,14 @@ targetdir_fill = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fill'
 
 fileNames_week = glob.glob(targetdir + r'\*')
 fileNames_week_fill = glob.glob(targetdir_fill + r'\*')
-for fileName in fileNames_week, fileNames_week_fill:
+for fileName in fileNames_week:
     try:
         os.remove(fileName)
+    except:
+        break
+for fileName1 in fileNames_week_fill:
+    try:
+        os.remove(fileName1)
     except:
         break
 
@@ -57,6 +62,7 @@ for stock_file in read_dir_files:
 
 
 
+    
     
 
 
