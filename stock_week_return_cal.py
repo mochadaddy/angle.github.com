@@ -1,11 +1,14 @@
 # coding: utf-8
-import tushare as ts
+'''
+根据标志位得到买入卖出价格，并计算策略收益、资金曲线、最大回撤比例。并与未采用策略的年化收益比较，得出使用
+策略的优劣
+
+'''
 import pandas as pd
 import numpy as np
 import os
 import glob
-import csv
-import stock_class as sc
+
 
 target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_return'
 read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fill'
@@ -24,27 +27,19 @@ for stock_file in read_dir_files:
     buy_price = None
     # 算出股票上市至今的时间长度（以年为单位）
     year_num = round(row_num/52, 2)
-
-    '''
-    end_date = '20181228'
-    start_date = df.iloc[0]['trade_date']
-    start_date_close = df.iloc[0]['close']
-    start_date_int = int(start_date)
-    start_date_str = str(start_date_int)
-    end_date_q4 = end_date[0:4]
-    start_date_str_q4 = start_date_str[0:4]
-    year_num = int(end_date_q4) - int(start_date_str_q4)
-    '''
     k = 0
+    o = p = 0
+    positive_return = negative_return = 0
+    # 当标志位从0变为1时，记录买入价格，当标志位从1变为0时，记录卖出价格，从买入卖出价格计算本次买卖收益率
     for i in range(0, row_num):
+
         if np.isnan(df.iloc[i]['ma5']):
             continue
         else:
-            #if pd.isnull(df.iloc[i - 1]['flag']):
-                #df.ix[i, 'money_cal'] = 100
             if df.iloc[i - 1]['flag'] == 0 and df.iloc[i]['flag'] == 1:
                 buy_price = df.iloc[i]['close']
                 k = k + 1
+                # 初始化买入价格，历史最高价格，回撤比例
                 if k == 1:
                     df.ix[i, 'money_cal'] = df.ix[i, 'close']
                     buy_price_init = df.ix[i, 'close']
@@ -56,6 +51,14 @@ for stock_file in read_dir_files:
                 else:
                     sell_price = df.iloc[i]['close']
                     return_rate = (sell_price - buy_price) / buy_price
+                    if return_rate > 0:
+                        o = o + 1
+                        positive_return = return_rate + positive_return
+
+                    if return_rate < 0:
+                        p = p + 1
+                        negative_return = return_rate + negative_return
+
                     df.ix[i, 'return_rate'] = return_rate
                     j = i
                     while pd.isnull(df.iloc[j]['money_cal']):
@@ -68,10 +71,18 @@ for stock_file in read_dir_files:
                     withdrawal_rate = 1 - (df.ix[i, 'money_cal'] / max_price)
                     # 比较所有的回撤比例，取得最大的回撤比例
                     if max_withdrawal_rate < withdrawal_rate:
-                        max_withdrawal_rate = withdrawal_rate
+                        max_withdrawal_rate = round(withdrawal_rate, 4)
+                    # 计算策略年化收益率及资金曲线和股票本身年化收益率
                     times = round((df.ix[i, 'money_cal']-buy_price_init)/buy_price_init/year_num, 2)
                     times_no_ma5 = round((df.ix[i, 'close']-buy_price_init)/buy_price_init/year_num, 2)
-    print (stock_file, times, times_no_ma5, max_withdrawal_rate)
+    # 评价策略优劣
+    strategy_estimate = round(times/(max_withdrawal_rate*100), 4)
+    # 计算盈亏收益比
+    positive_return_average = positive_return / o
+    negative_return_average = negative_return / p
+    profit_to_loss_ratio = round(positive_return_average/abs(negative_return_average), 2)
+    print (stock_file, times, times_no_ma5, max_withdrawal_rate, strategy_estimate, profit_to_loss_ratio)
+    # 比较采用5周均线策略年化收益和未采用策略的优劣
     if times > times_no_ma5:
         m = m + 1
     else:
