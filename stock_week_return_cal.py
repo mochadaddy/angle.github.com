@@ -81,12 +81,13 @@ for stock_file in read_dir_files:
     positive_return_average = positive_return / o
     negative_return_average = negative_return / p
     profit_to_loss_ratio = round(positive_return_average/abs(negative_return_average), 2)
-    print (stock_file, times, times_no_ma5, max_withdrawal_rate, strategy_estimate, profit_to_loss_ratio)
+    win_ratio = round(float(o) / float((o + p)), 2)
+    print (stock_file, times, times_no_ma5, max_withdrawal_rate, strategy_estimate, profit_to_loss_ratio, win_ratio)
     # 比较采用5周均线策略年化收益和未采用策略的优劣
     if times > times_no_ma5:
         m = m + 1
     else:
         n = n + 1
-    print (m, n)
     pd.DataFrame.to_csv(df, target_dir + os.sep + stock_file, encoding='gbk')
-    
+print (m, n)
+
