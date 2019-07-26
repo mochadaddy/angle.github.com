@@ -1,4 +1,9 @@
+
 # coding: utf-8
+'''
+按照5周均线，填写股票买入卖出标志位
+
+'''
 import tushare as ts
 import pandas as pd
 import os
@@ -9,7 +14,7 @@ import numpy as np
 
 # 联接tushare的api接口
 pro = sc.get_tocken()
-yestorday = sc.get_sys_date()
+yesterday = sc.get_sys_date()
 targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_week'
 read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return/nhsy.csv'
 targetdir_fill = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fill'
@@ -35,7 +40,7 @@ stock_list_5 = stock_list[stock_list['year_annual_return'] > 0]
 stock_num = stock_list_5.shape[0]
 for i in range(0, stock_num):
     stock_code = stock_list_5.iloc[i]['ts_code']
-    df = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date='19910101', end_date=yestorday, ma=[5])
+    df = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date='19910101', end_date=yesterday, ma=[5])
     df_aes = df.sort_values('trade_date', ascending=True)
     df_new = df_aes.reset_index(drop=True)
     # 当周线收盘价高于5周均线时，置flag标志位为1，当周线收盘价低于5周均线时，置flag标志位为0
@@ -60,10 +65,6 @@ for stock_file in read_dir_files:
     pd.DataFrame.to_csv(df1, targetdir_fill + os.sep + stock_file, encoding='gbk')
 
 
-
-
-    
-    
 
 
 
