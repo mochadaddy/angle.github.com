@@ -16,10 +16,10 @@ last_trade_day_value = last_trade_day.iloc[0]['cal_date']
 
 
 read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return/nhsy.csv'
-read_dir_week = 'D:/Program Files/tdx/vipdoc/sz/sz_week'
+read_dir_week = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fill'
 target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_simulate'
 stock_list = pd.read_csv(read_dir, usecols=['ts_code', 'year_annual_return'])
-stock_list_5 = stock_list[stock_list['year_annual_return'] >= 10]
+stock_list_5 = stock_list[stock_list['year_annual_return'] >= 0]
 
 stock_num = stock_list_5.shape[0]
 for i in range(0, stock_num):
