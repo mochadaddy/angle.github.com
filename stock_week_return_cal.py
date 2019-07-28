@@ -2,7 +2,6 @@
 '''
 根据标志位得到买入卖出价格，并计算策略收益、资金曲线、最大回撤比例。并与未采用策略的年化收益比较，得出使用
 策略的优劣
-
 '''
 import pandas as pd
 import numpy as np
@@ -90,4 +89,3 @@ for stock_file in read_dir_files:
         n = n + 1
     pd.DataFrame.to_csv(df, target_dir + os.sep + stock_file, encoding='gbk')
 print (m, n)
-
