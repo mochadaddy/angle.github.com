@@ -18,7 +18,7 @@ stock_sz_num = stock_list_sz.shape[0]
 stock_analyse_capital = pd.DataFrame(index=range(0, stock_sz_num), columns=['ts_code', 'year', 'year_annual_return'])
 # print stock_list_sz
 targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return'
-szpathdir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare'
+szpathdir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
 szlistfile = os.listdir(szpathdir)
 file_count = 0
 j = 0
