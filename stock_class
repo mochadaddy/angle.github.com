@@ -1,12 +1,13 @@
 # coding: utf-8
 import tushare as ts
 import datetime as dt
+import time
 import stock_class as sc
 
 
 # 取tushare的token并连接api
 def get_tocken():
-    token = ts.set_token('')
+    token = ts.set_token('71a5947e1d01e9b5c5275f2de127101940acd4cdb44cc2aad9c7e7cd')
     pro = ts.pro_api(token)
     return pro
 
@@ -14,7 +15,7 @@ def get_tocken():
 # 取系统上一日
 def get_sys_date():
     today = dt.date.today()
-    yestorday = today - dt.timedelta(days=1)
+    yestorday = today - dt.timedelta(days=0)
     formatted_yestorday = yestorday.strftime('%Y%m%d')
     return formatted_yestorday
 
@@ -22,14 +23,22 @@ def get_sys_date():
 # 取深证股票
 def get_sz_stock():
     pro = sc.get_tocken()
-    stock_list = pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
-    stock_list_sz = stock_list.loc[stock_list['ts_code'].str.contains('SZ')]
+    for _ in range(3):
+        try:
+            stock_list = pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
+            stock_list_sz = stock_list.loc[stock_list['ts_code'].str.contains('SZ')]
+        except:
+            time.sleep(15)
     return stock_list_sz
 
 
 # 取上海股票
 def get_sh_stock():
     pro = sc.get_tocken()
-    stock_list = pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
-    stock_list_sh = stock_list.loc[stock_list['ts_code'].str.contains('SH')]
-    return stock_list_s
+    for _ in range(3):
+        try:
+            stock_list = pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
+            stock_list_sh = stock_list.loc[stock_list['ts_code'].str.contains('SH')]
+        except:
+            time.sleep(15)
+    return stock_list_sh
