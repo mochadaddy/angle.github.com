@@ -3,6 +3,7 @@ import tushare as ts
 import pandas as pd
 import os
 import stock_class as sc
+import time
 
 '''
 #通过 tushare的stock_basic、pro_bar、daily_basic接口计算股票总市值、流通市值
@@ -27,8 +28,15 @@ for i in range(0, stock_num):
     stock_code = stock_list.iloc[i]['ts_code']
     #print stock_code
     # print(ts.get_hist_data('000001', start='1991-01-01', end='2019-01-01', ))
-
-    df = ts.pro_bar(ts_code=stock_code, adj='hfq', start_date=startdate, end_date=formatted_yesterday)
+    for _ in range(3):
+        try:
+            df = ts.pro_bar(ts_code=stock_code, adj='hfq', start_date=startdate, end_date=formatted_yesterday)
+            df_week = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=startdate,
+                                 end_date=formatted_yesterday,
+                                 ma=[5])
+        except:
+            print ('time out')
+            time.sleep(2)
 
     # print type(df)
     rownum = df.shape[0]
@@ -55,9 +63,7 @@ for i in range(0, stock_num):
         df_new = df.reset_index(drop=True)
         pd.DataFrame.to_csv(df_new, targetdir + os.sep + stock_code + '.csv', encoding='gbk')
 
-    df_week = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=startdate, end_date=formatted_yesterday,
-                         ma=[5])
     df_week_sort = df_week.sort_values('trade_date', ascending=True)
     pd.DataFrame.to_csv(df_week_sort, targetdir_week + os.sep + stock_code + '.csv', encoding='gbk')
     #pd.DataFrame.to_csv(df, targetdir + os.sep + '000001.csv',  encoding='gbk')
-
+    
