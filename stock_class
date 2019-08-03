@@ -3,6 +3,7 @@ import tushare as ts
 import datetime as dt
 import time
 import stock_class as sc
+import pandas as pd
 
 
 # 取tushare的token并连接api
@@ -42,3 +43,11 @@ def get_sh_stock():
         except:
             time.sleep(15)
     return stock_list_sh
+
+
+# 取年化回报数据
+def get_return_rate(rate):
+    target_annual_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return/nhsy.csv'
+    stock_list = pd.read_csv(target_annual_dir, usecols=['ts_code', 'year_annual_return'])
+    stock_list_return = stock_list[stock_list['year_annual_return'] > rate]
+    return stock_list_return
