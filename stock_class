@@ -4,6 +4,7 @@ import datetime as dt
 import time
 import stock_class as sc
 import pandas as pd
+import os
 
 
 # 取tushare的token并连接api
@@ -29,7 +30,7 @@ def get_sz_stock():
             stock_list = pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
             stock_list_sz = stock_list.loc[stock_list['ts_code'].str.contains('SZ')]
         except:
-            time.sleep(15)
+            time.sleep(2)
     return stock_list_sz
 
 
@@ -41,7 +42,7 @@ def get_sh_stock():
             stock_list = pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
             stock_list_sh = stock_list.loc[stock_list['ts_code'].str.contains('SH')]
         except:
-            time.sleep(15)
+            time.sleep(2)
     return stock_list_sh
 
 
@@ -51,3 +52,12 @@ def get_return_rate(rate):
     stock_list = pd.read_csv(target_annual_dir, usecols=['ts_code', 'year_annual_return'])
     stock_list_return = stock_list[stock_list['year_annual_return'] > rate]
     return stock_list_return
+
+# 取区间收益
+def get_backward_returns(stock_file, begin, end, window, filename):
+    read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
+    df = pd.read_csv(read_dir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'open', 'close', 'pct_chg',
+                                                               'vol', 'amount', 'MA_5', 'MA_10', 'MA_250'])
+
+
+
