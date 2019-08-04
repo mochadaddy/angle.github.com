@@ -41,5 +41,3 @@ for stock_file in szlistfile:
         stock_analyse_capital.at[j, 'year_annual_return'] = annual_return
         j = j + 1
 pd.DataFrame.to_csv(stock_analyse_capital, targetdir + os.sep + 'nhsy.csv', encoding='gbk')
-
-    
