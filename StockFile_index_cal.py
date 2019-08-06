@@ -22,6 +22,14 @@ stock_list = sc.get_sz_stock()
 # print stock_list
 stock_num = stock_list.shape[0]
 
+# 获取深证成分指数日线数据
+df_index = pro.index_daily(ts_code='399001.SZ', start_date=startdate, end_date=formatted_yesterday)
+df_index = df_index.sort_values('trade_date', ascending=True)
+df_index = df_index.reset_index(drop=True)
+for ma in ma_list:
+    df_index['MA_' + str(ma)] = df_index['close'].rolling(window=ma, center=False, ).mean()
+pd.DataFrame.to_csv(df_index, targetdir + os.sep + '399001.SZ.csv', encoding='gbk')
+
 
 for i in range(0, stock_num):
 
