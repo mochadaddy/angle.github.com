@@ -22,10 +22,11 @@ stock_list = sc.get_sz_stock()
 # print stock_list
 stock_num = stock_list.shape[0]
 
+
 df = pd.DataFrame()
 df_week = pd.DataFrame()
 
-for i in range(281, stock_num):
+for i in range(262, stock_num):
 
     stock_code = stock_list.iloc[i]['ts_code']
     #print stock_code
@@ -76,11 +77,14 @@ for i in range(281, stock_num):
 '''
 # 获取深证成分指数日线数据
 df_index = pro.index_daily(ts_code='399001.SZ', start_date=startdate, end_date=formatted_yesterday)
+df_index_week =pro.index_weekly(ts_code='399001.SZ', start_date=startdate, end_date=formatted_yesterday, ma=[5])
 df_index = df_index.sort_values('trade_date', ascending=True)
+df_index_week = df_index_week.sort_values('trade_date', ascending=True)
 df_index = df_index.reset_index(drop=True)
 for ma in ma_list:
     df_index['MA_' + str(ma)] = df_index['close'].rolling(window=ma, center=False, ).mean()
+    df_index_week['ma' + str(ma)] = df_index_week['close'].rolling(window=ma, center=False, ).mean()
 pd.DataFrame.to_csv(df_index, targetdir + os.sep + '399001.SZ.csv', encoding='gbk')
+pd.DataFrame.to_csv(df_index_week, targetdir_week + os.sep + '399001.SZ.csv', encoding='gbk')
+'''
 
-
-''' 
