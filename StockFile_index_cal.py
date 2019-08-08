@@ -24,13 +24,40 @@ stock_num = stock_list.shape[0]
 
 # 获取深证成分指数日线数据
 df_index = pro.index_daily(ts_code='399001.SZ', start_date=startdate, end_date=formatted_yesterday)
+# coding: utf-8
+import tushare as ts
+import pandas as pd
+import os
+import stock_class as sc
+import time
+
+'''
+#通过 tushare的stock_basic、pro_bar、daily_basic接口计算股票总市值、流通市值
+@author  by hyq
+'''
+
+# 联接tushare的api接口
+pro = sc.get_tocken()
+targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
+targetdir_week = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/week_download'
+startdate = '19910101'
+# 得到系统日期的前一天
+formatted_yesterday = sc.get_sys_date()
+ma_list = [5, 10, 250]
+stock_list = sc.get_sz_stock()
+# print stock_list
+stock_num = stock_list.shape[0]
+
+# 获取深证成分指数日线数据
+df_index = pro.index_daily(ts_code='399001.SZ', start_date=startdate, end_date=formatted_yesterday)
 df_index = df_index.sort_values('trade_date', ascending=True)
 df_index = df_index.reset_index(drop=True)
 for ma in ma_list:
     df_index['MA_' + str(ma)] = df_index['close'].rolling(window=ma, center=False, ).mean()
 pd.DataFrame.to_csv(df_index, targetdir + os.sep + '399001.SZ.csv', encoding='gbk')
 
-
+df = pd.DataFrame()
+df_week = pd.DataFrame()
 for i in range(0, stock_num):
 
     stock_code = stock_list.iloc[i]['ts_code']
@@ -73,5 +100,4 @@ for i in range(0, stock_num):
 
     df_week_sort = df_week.sort_values('trade_date', ascending=True)
     pd.DataFrame.to_csv(df_week_sort, targetdir_week + os.sep + stock_code + '.csv', encoding='gbk')
-    #pd.DataFrame.to_csv(df, targetdir + os.sep + '000001.csv',  encoding='gbk')
-    
+    #pd.DataFrame.to_csv(df, targetdir + os.sep + '000001.csv',  encoding='gbk')        ·  
