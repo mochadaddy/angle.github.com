@@ -18,22 +18,25 @@ read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
 target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_illiq'
 read_dir_illiq = 'D:/Program Files/tdx/vipdoc/sz/sz_illiq'
 target_dir_illiq = 'D:/Program Files/tdx/vipdoc/sz/sz_illiq_compare'
-start_date = '20190701'
-end_date = '20190801'
+start_date = '20190708'
+end_date = '20190809'
+# 取年化收益大于0的股票集合
 stock_list = sc.get_return_rate(0)
 stock_num = stock_list.shape[0]
 
-
+# 清除文件
 fileNames_illiq = glob.glob(target_dir + r'\*')
 for fileName in fileNames_illiq:
     try:
         os.remove(fileName)
     except:
         break
+#
 for j in range(0, stock_num):
     stock_code = stock_list.iloc[j]['ts_code']
-    df = pd.read_csv(read_dir + os.sep + stock_code + '.csv', usecols=['ts_code', 'trade_date', 'open', 'close', 'change',
-                                                                   'pct_chg', 'vol', 'amount', 'MA_5', 'MA_10', 'MA_250'])
+    df = pd.read_csv(read_dir + os.sep + stock_code + '.csv', usecols=['ts_code', 'trade_date', 'open', 'close', 'high',
+                                                                       'low', 'change', 'pct_chg', 'vol', 'amount',
+                                                                       'MA_5', 'MA_10', 'MA_250'])
     row_num = df.shape[0]
     if row_num >= 50:
         df_stock_illiq = pd.DataFrame(columns=['ts_code', 'trade_date', 'illiq', 'illiq' + str(5)])
@@ -41,7 +44,7 @@ for j in range(0, stock_num):
             if str(df.iloc[i]['trade_date']) >= start_date and str(df.iloc[i]['trade_date']) <= end_date:
                 df_stock_illiq.at[i, 'ts_code'] = df.iloc[i]['ts_code']
                 df_stock_illiq.at[i, 'trade_date'] = df.iloc[i]['trade_date']
-                illiq = abs(df.iloc[i]['change'])*1.0/df.iloc[i]['amount']*10000
+                illiq = abs(df.iloc[i]['change']+df.iloc[i]['high'] - df.iloc[i]['low'])*1.0/df.iloc[i]['amount']*10000
                 df.at[i, 'illiq'] = illiq
                 df_stock_illiq.at[i, 'illiq'] = illiq
                 df_stock_illiq['illiq'+str(5)] = df['illiq'].rolling(window=5, center=False).mean()
@@ -60,4 +63,3 @@ for stock_file in szlistfile:
                                                               aggfunc=np.mean)
     df_count = df_count.append(df_illiq_transpotion)
 pd.DataFrame.to_csv(df_count, target_dir_illiq + os.sep + 'illiq.csv', encoding='gbk')
-

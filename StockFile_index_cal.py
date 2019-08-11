@@ -4,6 +4,8 @@ import pandas as pd
 import os
 import stock_class as sc
 import time
+import datetime as dt
+from datetime import datetime as dtt
 
 '''
 #通过 tushare的stock_basic、pro_bar、daily_basic接口计算股票总市值、流通市值
@@ -25,8 +27,10 @@ stock_num = stock_list.shape[0]
 
 df = pd.DataFrame()
 df_week = pd.DataFrame()
+time_format = dtt.strptime(formatted_yesterday, '%Y%m%d')
+weekday = time_format.weekday()+1
 
-for i in range(262, stock_num):
+for i in range(0, stock_num):
 
     stock_code = stock_list.iloc[i]['ts_code']
     #print stock_code
@@ -35,9 +39,10 @@ for i in range(262, stock_num):
     for _ in range(3):
         try:
             df = ts.pro_bar(ts_code=stock_code, adj='hfq', start_date=startdate, end_date=formatted_yesterday)
-            df_week = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=startdate,
-                                 end_date=formatted_yesterday,
-                                 ma=[5])
+            if weekday == 5 or weekday == 6:
+                df_week = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=startdate,
+                                     end_date=formatted_yesterday,
+                                     ma=[5])
         except:
             time.sleep(2)
     if df is None:
@@ -74,7 +79,7 @@ for i in range(262, stock_num):
             df_week_sort = df_week.sort_values('trade_date', ascending=True)
         pd.DataFrame.to_csv(df_week_sort, targetdir_week + os.sep + stock_code + '.csv', encoding='gbk')
     #pd.DataFrame.to_csv(df, targetdir + os.sep + '000001.csv',  encoding='gbk')
-'''
+
 # 获取深证成分指数日线数据
 df_index = pro.index_daily(ts_code='399001.SZ', start_date=startdate, end_date=formatted_yesterday)
 df_index_week =pro.index_weekly(ts_code='399001.SZ', start_date=startdate, end_date=formatted_yesterday, ma=[5])
@@ -86,5 +91,3 @@ for ma in ma_list:
     df_index_week['ma' + str(ma)] = df_index_week['close'].rolling(window=ma, center=False, ).mean()
 pd.DataFrame.to_csv(df_index, targetdir + os.sep + '399001.SZ.csv', encoding='gbk')
 pd.DataFrame.to_csv(df_index_week, targetdir_week + os.sep + '399001.SZ.csv', encoding='gbk')
-'''
-

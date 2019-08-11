@@ -62,13 +62,19 @@ def get_backward_returns(stock_file, start_date, end_date, window):
                                                                'vol', 'amount', 'MA_5', 'MA_10', 'MA_250'])
     row_num = df.shape[0]
     df_new = pd.DataFrame()
+    df_new_window = pd.DataFrame()
     for i in range(0, row_num):
-        if str(df.iloc[i]['trade_date']) >= start_date:
+        if str(df.iloc[i]['trade_date']) >= start_date and str(df.iloc[i]['trade_date']) <= end_date:
            df_new = df_new.append(df[i: i+1])
-        if str(df.iloc[i]['trade_date']) >= end_date:
-           break
+           df_new_window = df_new_window.append(df[i+window:i+window+1])
+
+        else:
+           continue
     df_new_reindex = df_new.reset_index(drop=True)
-    df_new_reindex['return'+str(window)] = df_new_reindex['close'].shift(-window) / df_new_reindex['close'] - 1.0
+    frame = [df_new, df_new_window]
+    df_union = pd.concat(frame)
+    df_union_reindex = df_union.reset_index(drop=True)
+    df_new_reindex['return'+str(window)] = df_union_reindex['close'].shift(-window) / df_new_reindex['close'] - 1.0
     #print df_new_reindex
     return df_new_reindex
 
@@ -92,7 +98,4 @@ def get_nost_stock(df):
     data_with_no_st = df.drop(index)
     data_with_no_st = data_with_no_st.reset_index(drop=True)
     return data_with_no_st
-
-
-
 
