@@ -60,4 +60,3 @@ for colunm in df_50:
     else:
         continue
 #print df_sort
-

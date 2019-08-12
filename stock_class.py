@@ -21,6 +21,16 @@ def get_sys_date():
     formatted_yestorday = yestorday.strftime('%Y%m%d')
     return formatted_yestorday
 
+#取上一交易日
+def get_last_trade_day():
+    pro = sc.get_tocken()
+    sys_date = sc.get_sys_date()
+    trade_days = pro.trade_cal(exchange='', start_date='19910101', end_date=sys_date)
+    trade_day = trade_days[trade_days['is_open'] == 1]
+    last_trade_day = trade_day.sort_values('cal_date', ascending=False).head(1)
+    last_trade_day_value = last_trade_day.iloc[0]['cal_date']
+    return last_trade_day_value
+
 
 # 取深证股票
 def get_sz_stock():
@@ -99,3 +109,9 @@ def get_nost_stock(df):
     data_with_no_st = data_with_no_st.reset_index(drop=True)
     return data_with_no_st
 
+# 获取股票流动市值
+def get_stock_cap(ts_code, trade_date):
+    pro = sc.get_tocken()
+    #last_trade_day = sc.get_last_trade_day()
+    data = pro.query('daily_basic', ts_code=ts_code, trade_date=trade_date, fields='ts_code,trade_date,turnover_rate,circ_mv')
+    return data

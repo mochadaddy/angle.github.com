@@ -30,6 +30,7 @@ df_week = pd.DataFrame()
 time_format = dtt.strptime(formatted_yesterday, '%Y%m%d')
 weekday = time_format.weekday()+1
 
+
 for i in range(0, stock_num):
 
     stock_code = stock_list.iloc[i]['ts_code']
@@ -38,8 +39,8 @@ for i in range(0, stock_num):
 
     for _ in range(3):
         try:
-            df = ts.pro_bar(ts_code=stock_code, adj='hfq', start_date=startdate, end_date=formatted_yesterday)
-            if weekday == 5 or weekday == 6:
+            #df = ts.pro_bar(ts_code=stock_code, adj='hfq', start_date=startdate, end_date=formatted_yesterday)
+            if weekday == 5 or weekday == 6 or weekday == 7:
                 df_week = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=startdate,
                                      end_date=formatted_yesterday,
                                      ma=[5])
@@ -63,10 +64,8 @@ for i in range(0, stock_num):
                 frames = [df2, df1]
                 frames_result = pd.concat(frames)
                 df = frames_result.sort_values('trade_date', ascending=True)
-                # df = df.sort_values('trade_date', ascending=True)
                 for ma in ma_list:
                     df['MA_' + str(ma)] = df['close'].rolling(window=ma, center=False, ).mean()
-                # print (df)
                 df_new = df.reset_index(drop=True)
                 pd.DataFrame.to_csv(df_new, targetdir + os.sep + stock_code + '.csv',  encoding='gbk')
         else:
@@ -80,7 +79,8 @@ for i in range(0, stock_num):
     else:
         df_week_sort = df_week.sort_values('trade_date', ascending=True)
         pd.DataFrame.to_csv(df_week_sort, targetdir_week + os.sep + stock_code + '.csv', encoding='gbk')
-    #pd.DataFrame.to_csv(df, targetdir + os.sep + '000001.csv',  encoding='gbk')
+
+
 
 # 获取深证成分指数日线数据
 df_index = pro.index_daily(ts_code='399001.SZ', start_date=startdate, end_date=formatted_yesterday)
@@ -92,4 +92,4 @@ for ma in ma_list:
     df_index['MA_' + str(ma)] = df_index['close'].rolling(window=ma, center=False, ).mean()
     df_index_week['ma' + str(ma)] = df_index_week['close'].rolling(window=ma, center=False, ).mean()
 pd.DataFrame.to_csv(df_index, targetdir + os.sep + '399001.SZ.csv', encoding='gbk')
-pd.DataFrame.to_csv(df_index_week, targetdir_week + os.sep + '399001.SZ.csv', encoding='gbk')   
+pd.DataFrame.to_csv(df_index_week, targetdir_week + os.sep + '399001.SZ.csv', encoding='gbk')
