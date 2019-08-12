@@ -43,6 +43,8 @@ for i in range(0, stock_num):
                 df_week = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=startdate,
                                      end_date=formatted_yesterday,
                                      ma=[5])
+            else:
+                df_week = None
         except:
             time.sleep(2)
     if df is None:
@@ -73,10 +75,10 @@ for i in range(0, stock_num):
                 df['MA_' + str(ma)] = df['close'].rolling(window=ma, center=False, ).mean()
             df_new = df.reset_index(drop=True)
             pd.DataFrame.to_csv(df_new, targetdir + os.sep + stock_code + '.csv', encoding='gbk')
-        if df_week is None:
-            continue
-        else:
-            df_week_sort = df_week.sort_values('trade_date', ascending=True)
+    if df_week is None:
+        continue
+    else:
+        df_week_sort = df_week.sort_values('trade_date', ascending=True)
         pd.DataFrame.to_csv(df_week_sort, targetdir_week + os.sep + stock_code + '.csv', encoding='gbk')
     #pd.DataFrame.to_csv(df, targetdir + os.sep + '000001.csv',  encoding='gbk')
 
@@ -90,4 +92,4 @@ for ma in ma_list:
     df_index['MA_' + str(ma)] = df_index['close'].rolling(window=ma, center=False, ).mean()
     df_index_week['ma' + str(ma)] = df_index_week['close'].rolling(window=ma, center=False, ).mean()
 pd.DataFrame.to_csv(df_index, targetdir + os.sep + '399001.SZ.csv', encoding='gbk')
-pd.DataFrame.to_csv(df_index_week, targetdir_week + os.sep + '399001.SZ.csv', encoding='gbk')
+pd.DataFrame.to_csv(df_index_week, targetdir_week + os.sep + '399001.SZ.csv', encoding='gbk')   
