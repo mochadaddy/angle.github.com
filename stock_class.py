@@ -131,14 +131,14 @@ def get_nost_stock(df):
 def get_stock_cap(ts_code, trade_date):
     read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/sz_capital'
     szlistfile = os.listdir(read_dir)
-    for stock_file in szlistfile:
-        if stock_file == (trade_date + '.csv'):
-            data = pd.read_csv(read_dir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'turnover_rate',
-                                                                        'circ_mv'])
-            row_num = data.shape[0]
-            for i in range(0, row_num):
-                if ts_code == data.iloc[i]['ts_code']:
-                    return data[i:i+1]
+    stock_file = trade_date + '.csv'
+
+    data = pd.read_csv(read_dir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'turnover_rate',
+                                                                'circ_mv'])
+    row_num = data.shape[0]
+    for i in range(0, row_num):
+        if ts_code == data.iloc[i]['ts_code']:
+            return data[i:i+1]
 
 
     
