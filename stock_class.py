@@ -31,6 +31,22 @@ def get_last_trade_day():
     last_trade_day_value = last_trade_day.iloc[0]['cal_date']
     return last_trade_day_value
 
+#判断是否为交易日
+def get_is_trade_day(date):
+    isbolean = 'No'
+    pro = sc.get_tocken()
+    sys_date = sc.get_sys_date()
+    trade_days = pro.trade_cal(exchange='', start_date='19910101', end_date=sys_date)
+    trade_day = trade_days[trade_days['is_open'] == 1]
+    row_num_day = trade_day.shape[0]
+    for i in range(0, row_num_day):
+        if trade_day.iloc[i]['cal_date'] == date:
+            isbolean = 'yes'
+            return isbolean
+        else:
+            continue
+    return isbolean
+
 
 # 取深证股票
 def get_sz_stock():
@@ -74,19 +90,21 @@ def get_backward_returns(stock_file, start_date, end_date, window):
     df_new = pd.DataFrame()
     df_new_window = pd.DataFrame()
     for i in range(0, row_num):
-        if str(df.iloc[i]['trade_date']) >= start_date and str(df.iloc[i]['trade_date']) <= end_date:
+        if str(df.iloc[i]['trade_date']) == start_date: #and str(df.iloc[i]['trade_date']) <= end_date:
            df_new = df_new.append(df[i: i+1])
            df_new_window = df_new_window.append(df[i+window:i+window+1])
-
         else:
            continue
-    df_new_reindex = df_new.reset_index(drop=True)
-    frame = [df_new, df_new_window]
-    df_union = pd.concat(frame)
-    df_union_reindex = df_union.reset_index(drop=True)
-    df_new_reindex['return'+str(window)] = df_union_reindex['close'].shift(-window) / df_new_reindex['close'] - 1.0
-    #print df_new_reindex
-    return df_new_reindex
+    if df_new.empty:
+        return None
+    else:
+        df_new_reindex = df_new.reset_index(drop=True)
+        frame = [df_new, df_new_window]
+        df_union = pd.concat(frame)
+        df_union_reindex = df_union.reset_index(drop=True)
+        df_new_reindex['return'+str(window)] = df_union_reindex['close'].shift(-1) / df_new_reindex['close'] - 1.0
+        #print df_new_reindex
+        return df_new_reindex
 
 # 剔除st和*st股票
 def get_nost_stock(df):
@@ -111,7 +129,16 @@ def get_nost_stock(df):
 
 # 获取股票流动市值
 def get_stock_cap(ts_code, trade_date):
-    pro = sc.get_tocken()
-    #last_trade_day = sc.get_last_trade_day()
-    data = pro.query('daily_basic', ts_code=ts_code, trade_date=trade_date, fields='ts_code,trade_date,turnover_rate,circ_mv')
-    return data
+    read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/sz_capital'
+    szlistfile = os.listdir(read_dir)
+    for stock_file in szlistfile:
+        if stock_file == (trade_date + '.csv'):
+            data = pd.read_csv(read_dir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'turnover_rate',
+                                                                        'circ_mv'])
+            row_num = data.shape[0]
+            for i in range(0, row_num):
+                if ts_code == data.iloc[i]['ts_code']:
+                    return data[i:i+1]
+
+
+    
