@@ -16,6 +16,7 @@ from datetime import datetime as dtt
 pro = sc.get_tocken()
 targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
 targetdir_week = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/week_download'
+targetdir_cap = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/sz_capital'
 startdate = '19910101'
 # 得到系统日期的前一天
 formatted_yesterday = sc.get_sys_date()
@@ -39,7 +40,7 @@ for i in range(0, stock_num):
 
     for _ in range(3):
         try:
-            #df = ts.pro_bar(ts_code=stock_code, adj='hfq', start_date=startdate, end_date=formatted_yesterday)
+            df = ts.pro_bar(ts_code=stock_code, adj='hfq', start_date=startdate, end_date=formatted_yesterday)
             if weekday == 5 or weekday == 6 or weekday == 7:
                 df_week = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=startdate,
                                      end_date=formatted_yesterday,
@@ -93,3 +94,9 @@ for ma in ma_list:
     df_index_week['ma' + str(ma)] = df_index_week['close'].rolling(window=ma, center=False, ).mean()
 pd.DataFrame.to_csv(df_index, targetdir + os.sep + '399001.SZ.csv', encoding='gbk')
 pd.DataFrame.to_csv(df_index_week, targetdir_week + os.sep + '399001.SZ.csv', encoding='gbk')
+
+
+#取股票市值
+trade_date = sc.get_last_trade_day()
+df_cap = pro.query('daily_basic',  trade_date=trade_date, fields='ts_code,trade_date,turnover_rate,circ_mv')
+pd.DataFrame.to_csv(df_cap, targetdir_cap + os.sep + trade_date + '.csv', encoding='gbk')       
