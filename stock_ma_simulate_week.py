@@ -69,7 +69,7 @@ for i in range(0, stock_num):
             else:
                 continue
             if (df_union_new.iloc[row_num_sim- 1]['flag'] == 1) and (df_union_new.iloc[row_num_sim - 2]['flag'] == 0):
-                print stock_code + '.csv'
+                print stock_code
 
             pd.DataFrame.to_csv(df_union_new, target_dir + os.sep + stock_code + '.csv', encoding='gbk')
 

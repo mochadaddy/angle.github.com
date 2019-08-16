@@ -11,15 +11,18 @@ import glob
 
 target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_return'
 read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fill'
+target_dir_conclude = 'D:/Program Files/tdx/vipdoc/sz/sz_week_conclude'
 fileNames_week = glob.glob(target_dir + r'\*')
 for fileName in fileNames_week:
     try:
         os.remove(fileName)
     except:
         break
-m = n = 0
+m = n = q = 0
+df_ma_conclude = pd.DataFrame()
 read_dir_files = os.listdir(read_dir)
 for stock_file in read_dir_files:
+    q = q + 1
     df = pd.read_csv(read_dir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'close', 'ma5', 'flag'])
     row_num = df.shape[0]
     # print row_num
@@ -81,11 +84,19 @@ for stock_file in read_dir_files:
     negative_return_average = negative_return / p
     profit_to_loss_ratio = round(positive_return_average/abs(negative_return_average), 2)
     win_ratio = round(float(o) / float((o + p)), 2)
-    print (stock_file, times, times_no_ma5, max_withdrawal_rate, strategy_estimate, profit_to_loss_ratio, win_ratio)
+    df_ma_conclude.at[q, 'sz_code'] = stock_file[:9]
+    df_ma_conclude.at[q, 'times'] = times
+    df_ma_conclude.at[q, 'times_no_ma5'] = times_no_ma5
+    df_ma_conclude.at[q, 'withdrawal'] = max_withdrawal_rate
+    df_ma_conclude.at[q, 'strategy_estimate'] = strategy_estimate
+    df_ma_conclude.at[q, 'profit_to_loss_ratio'] = profit_to_loss_ratio
+    df_ma_conclude.at[q, 'win_ratio'] = win_ratio
+    #print (stock_file, times, times_no_ma5, max_withdrawal_rate, strategy_estimate, profit_to_loss_ratio, win_ratio)
     # 比较采用5周均线策略年化收益和未采用策略的优劣
     if times > times_no_ma5:
         m = m + 1
     else:
         n = n + 1
     pd.DataFrame.to_csv(df, target_dir + os.sep + stock_file, encoding='gbk')
+pd.DataFrame.to_csv(df_ma_conclude, target_dir_conclude + os.sep + 'conclude.csv', encoding='gbk')
 print (m, n)

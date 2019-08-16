@@ -130,9 +130,8 @@ def get_nost_stock(df):
 # 获取股票流动市值
 def get_stock_cap(ts_code, trade_date):
     read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/sz_capital'
-    szlistfile = os.listdir(read_dir)
+    #szlistfile = os.listdir(read_dir)
     stock_file = trade_date + '.csv'
-
     data = pd.read_csv(read_dir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'turnover_rate',
                                                                 'circ_mv'])
     row_num = data.shape[0]
@@ -141,4 +140,3 @@ def get_stock_cap(ts_code, trade_date):
             return data[i:i+1]
 
 
-    
