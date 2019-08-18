@@ -127,7 +127,7 @@ def get_nost_stock(df):
     data_with_no_st = data_with_no_st.reset_index(drop=True)
     return data_with_no_st
 
-# 获取股票流动市值
+# 获取股票流通市值
 def get_stock_cap(ts_code, trade_date):
     read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/sz_capital'
     #szlistfile = os.listdir(read_dir)

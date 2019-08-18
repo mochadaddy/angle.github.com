@@ -16,8 +16,9 @@ import numpy as np
 read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
 target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/combine_cap'
 start_date = '20190715'
-end_date = '20190813'
+end_date = '20190816'
 
+'''
 # 清除文件
 fileNames_illiq = glob.glob(target_dir + r'\*')
 for fileName in fileNames_illiq:
@@ -25,7 +26,10 @@ for fileName in fileNames_illiq:
         os.remove(fileName)
     except:
         break
+'''
 
+df_cap = pd.DataFrame(columns=['ts_code', 'trade_date', 'open', 'close', 'high', 'low', 'change', 'pct_chg', 'vol',
+                               'amount', 'MA_5', 'MA_10', 'MA_250', 'circ_mv'])
 szlistfile = os.listdir(read_dir)
 for stock_file in szlistfile:
     stock_code = stock_file[:9]

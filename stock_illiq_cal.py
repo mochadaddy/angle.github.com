@@ -31,7 +31,7 @@ for fileName in fileNames_illiq:
         os.remove(fileName)
     except:
         break
-'''
+
 for j in range(1341, stock_num):
     stock_code = stock_list.iloc[j]['ts_code']
     df_cap = pd.read_csv(read_dir + os.sep + stock_code + '.csv', usecols=['ts_code', 'trade_date', 'open', 'close',
@@ -64,14 +64,14 @@ for j in range(1341, stock_num):
         if df_stock_illiq_new.shape[0] != 0:
             pd.DataFrame.to_csv(df_stock_illiq_new, target_dir + os.sep + stock_code + '.csv', encoding='gbk')
 
-
+'''
 df_count = pd.DataFrame()
 szlistfile = os.listdir(read_dir_illiq)
 for stock_file in szlistfile:
     df_stock_illiq_compare = pd.read_csv(read_dir_illiq + os.sep + stock_file,
-                                         usecols=['ts_code', 'trade_date', 'illiq_adjust'])
+                                         usecols=['ts_code', 'trade_date', 'illiq5'])
     #行转列
-    df_illiq_transpotion = df_stock_illiq_compare.pivot_table(index='ts_code', columns='trade_date', values='illiq_adjust',
+    df_illiq_transpotion = df_stock_illiq_compare.pivot_table(index='ts_code', columns='trade_date', values='illiq5',
                                                               aggfunc=np.mean)
     df_count = df_count.append(df_illiq_transpotion)
 pd.DataFrame.to_csv(df_count, target_dir_illiq + os.sep + 'illiq.csv', encoding='gbk')
