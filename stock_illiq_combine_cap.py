@@ -15,7 +15,7 @@ import numpy as np
 
 read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
 target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/combine_cap'
-start_date = '20190715'
+start_date = '20190716'
 end_date = '20190816'
 
 '''
@@ -47,6 +47,7 @@ for stock_file in szlistfile:
                 df.at[i, 'circ_mv'] = df_cap.iloc[0]['circ_mv']
         else:
             continue
-    pd.DataFrame.to_csv(df, target_dir + os.sep + stock_file, encoding='gbk')
-
-
+    if 'circ_mv' in df:
+        pd.DataFrame.to_csv(df, target_dir + os.sep + stock_file, encoding='gbk')
+    else:
+        continue
