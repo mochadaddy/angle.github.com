@@ -23,7 +23,7 @@ end_date = '20190816'
 # 取年化收益大于0的股票集合
 stock_list = sc.get_return_rate(0)
 stock_num = stock_list.shape[0]
-
+'''
 # 清除文件
 fileNames_illiq = glob.glob(target_dir + r'\*')
 for fileName in fileNames_illiq:
@@ -31,9 +31,10 @@ for fileName in fileNames_illiq:
         os.remove(fileName)
     except:
         break
+'''
 for j in range(0, stock_num):
     stock_code = stock_list.iloc[j]['ts_code']
-    if os.path.exists(read_dir + os.sep + stock_code + '.csv'):
+    if os.path.exists(read_dir + os.sep + stock_code + '.csv') and stock_code != '399001.SZ':
         df_cap = pd.read_csv(read_dir + os.sep + stock_code + '.csv', usecols=['ts_code', 'trade_date', 'open', 'close',
                                                                                'high', 'low', 'change', 'pct_chg', 'vol',
                                                                                'amount',  'MA_5', 'MA_10',
