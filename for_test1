@@ -1,8 +1,5 @@
 # coding: utf-8
-'''
-按照日线计算emv指标和maemv指标
-
-'''
+import numpy as np
 import tushare as ts
 import pandas as pd
 import os
@@ -15,50 +12,36 @@ from datetime import datetime as dt
 import datetime as d
 
 
-
-'''
-df = sc.get_stock_cap('000028.SZ', '20190813')
-#df = df.sort_values(by='ts_code', ascending=True)
-#df = df.reset_index(drop=True)
-#row_num = df.shape[0]
-print df
-illiq_neutrilize = np.log10(df.iloc[0]['circ_mv'])
-print illiq_neutrilize
-
-target_dir_cap = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/sz_capital'
 pro = sc.get_tocken()
-df_cap = pro.query('daily_basic',  trade_date='20190809', fields='ts_code,trade_date,turnover_rate,circ_mv')
-pd.DataFrame.to_csv(df_cap, target_dir_cap + os.sep + '20190809' + '.csv', encoding='gbk')
-'''
+target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/sz_index'
+# 清除文件
+fileNames_illiq = glob.glob(target_dir + r'\*')
+for fileName in fileNames_illiq:
+    try:
+        os.remove(fileName)
+    except:
+        break
 
-df_new = pd.DataFrame()
+stock_list = sc.get_sz_stock()
+stock_num = stock_list.shape[0]
 
-target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/sz_detail'
-pro = sc.get_tocken()
-t = 0
-start_date = '2018-12-28'
-end_date = '2019-02-22'
-#end_date = dt.strptime(end_date, '%Y-%m-%d')
-while start_date <= end_date:
-    start_date = dt.strptime(start_date, '%Y-%m-%d')
-    start_date = start_date + d.timedelta(days=t)
+for i in range(0, stock_num):
 
-    start_date = start_date.strftime('%Y-%m-%d')
-    df_new = ts.get_tick_data('002587', date=start_date, src='tt')
-    if df_new is None:
-        continue
-    else:
-    #print df_new
-        t = t + 1
-        pd.DataFrame.to_csv(df_new, target_dir + os.sep + start_date + '-002587.csv', encoding='gbk')
-    #start_date = start_date.strftime('%Y%m%d')
+    stock_code = stock_list.iloc[i]['ts_code']
+    for _ in range(3):
+        try:
+            df = pro.daily_basic(ts_code=stock_code, start_date='20180101', end_date='20190907', fields='ts_code,trade_date,turnover_rate,volume_ratio,pe_ttm,pb,ps_ttm,total_mv,circ_mv')
+            df = df.sort_values('trade_date', ascending=True)
+            if df is None:
+                continue
+            else:
+                pd.DataFrame.to_csv(df, target_dir + os.sep + stock_code + '.csv', encoding='gbk')
+        except:
+            time.sleep(2)
 
-'''
-row_num = df.shape[0]
-for i in range(0,row_num):
-    if df.iloc[i]['volume']>=100 and df.iloc[i]['volume']<=1000:
-        df_new = df_new.append(df[i: i+1])
-'''
+
+
+
 
 
 
