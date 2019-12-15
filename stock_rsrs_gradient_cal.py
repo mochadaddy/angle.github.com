@@ -12,16 +12,20 @@ import numpy as np
 
 
 read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
+targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_rsrs_beta_cal'
 b1 = 0
-x = 0
-y = 0
-df = pd.read_csv(read_dir + os.sep + '002019.SZ.csv', usecols=['ts_code', 'trade_date', 'high', 'low'])
+df = pd.read_csv(read_dir + os.sep + '000034.SZ.csv', usecols=['ts_code', 'trade_date', 'high', 'low'])
 row_num = df.shape[0]
+df_rsrs = pd.DataFrame(columns=['ts_code', 'trade_date', 'high', 'low', 'beta'])
 for k in range(0, row_num-18):
     i = 0
     j = 0
     x = 0
     y = 0
+   # code = df.iloc[k]['ts_code']
+    #trade_date = df.iloc[k]['trade_date']
+    #price_high = df.iloc[k]['high']
+    #price_low = df.iloc[k]['low']
     for i in range(0+k, 18+k):
         x = x + df.iloc[i]['low']
         y = y + df.iloc[i]['high']
@@ -33,33 +37,11 @@ for k in range(0, row_num-18):
         numerator += (df.iloc[j]['low'] - x_mean) * (df.iloc[j]['high'] - y_mean)
         dinominator += (df.iloc[j]['low'] - x_mean) ** 2
     b1 = numerator/dinominator
+    df_rsrs.at[k, 'ts_code'] = df.iloc[i]['ts_code']
+    df_rsrs.at[k, 'trade_date'] = df.iloc[i]['trade_date']
+    df_rsrs.at[k, 'high'] = df.iloc[i]['high']
+    df_rsrs.at[k, 'low'] = df.iloc[i]['low']
+    df_rsrs.at[k, 'beta'] = b1
+    #print b1,df.iloc[i]['trade_date']
+pd.DataFrame.to_csv(df_rsrs, targetdir + os.sep + 'beta_cal.csv', encoding='gbk')
 
-    print b1,df.iloc[i]['trade_date']
-
-
-
-
-
-
-
-
-
-'''
-df_gradient = pd.DataFrame()
-row_num = df.shape[0]
-for i in range(0, row_num):
-    if i == 0:
-        continue
-    else:
-        high_devalue = df.iloc[i]['high'] - df.iloc[i-1]['high']
-        low_devalue = df.iloc[i]['low'] - df.iloc[i-1]['low']
-        if low_devalue == 0:
-            continue
-        else:
-            gradient = high_devalue*1.00/low_devalue
-            df_gradient.at[i, 'ts_code'] = df.iloc[i]['ts_code']
-            df_gradient.at[i, 'trade_date'] = df.iloc[i]['trade_date']
-            df_gradient.at[i, 'gradient'] = gradient
-            df_gradient['gradient' + str(5)] = df_gradient['gradient'].rolling(window=18, center=False).mean()
-print df_gradient
-'''
