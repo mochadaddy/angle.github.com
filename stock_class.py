@@ -17,9 +17,19 @@ def get_tocken():
 # 取系统上一日
 def get_sys_date():
     today = dt.date.today()
-    yestorday = today - dt.timedelta(days=1)
+    yestorday = today - dt.timedelta(days=0)
     formatted_yestorday = yestorday.strftime('%Y%m%d')
-    return formatted_yestorday
+    formatted_yestorday_int = str(formatted_yestorday)
+    return formatted_yestorday_int
+
+#取20年前的一天
+def get_20_years_day():
+    today = dt.date.today()
+    yesterday = today - dt.timedelta(days=7300)
+    formatted_yesterday = int(yesterday.strftime('%Y%m%d'))
+    return formatted_yesterday
+
+
 
 #取上一交易日
 def get_last_trade_day():
@@ -138,5 +148,8 @@ def get_stock_cap(ts_code, trade_date):
     for i in range(0, row_num):
         if ts_code == data.iloc[i]['ts_code']:
             return data[i:i+1]
+
+
+
 
 
