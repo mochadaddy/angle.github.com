@@ -21,7 +21,8 @@ startdate = '19910101'
 midday = '20050101'
 # 得到系统日期的前一天
 formatted_yesterday = sc.get_sys_date()
-ma_list = [5, 20, 60]
+ma_day_list = [20]
+ma_week_list = [5]
 stock_list = sc.get_sz_stock()
 # print stock_list
 stock_num = stock_list.shape[0]
@@ -45,11 +46,11 @@ for i in range(0, stock_num):
     df_week_2 = pd.DataFrame()
     for _ in range(3):
         try:
-            df_1 = pd.DataFrame(ts.pro_bar(ts_code=stock_code, freq='D', adj='hfq', start_date=startdate, end_date=midday))
-            df_2 = pd.DataFrame(ts.pro_bar(ts_code=stock_code, freq='D', adj='hfq', start_date=midday, end_date=formatted_yesterday))
+            df_1 = ts.pro_bar(ts_code=stock_code, freq='D', adj='hfq', start_date=startdate, end_date=midday)
+            df_2 = ts.pro_bar(ts_code=stock_code, freq='D', adj='hfq', start_date=midday, end_date=formatted_yesterday)
             if weekday == 5 or weekday == 6:
-                df_week_1 = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=startdate, end_date=midday, ma=[5])
-                df_week_2 = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=midday, end_date=formatted_yesterday, ma=[5])
+                df_week_1 = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=startdate, end_date=midday)
+                df_week_2 = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=midday, end_date=formatted_yesterday)
 
                 #print df_week
             #else:
@@ -68,8 +69,8 @@ for i in range(0, stock_num):
         #frames = [df_2, df_1]
         #df_frames_result = pd.concat(frames)
         df = df_frames_result.sort_values(by='trade_date', ascending=True)
-        for ma in ma_list:
-            df['MA_' + str(ma)] = df['close'].rolling(window=ma, center=False, ).mean()
+        for ma in ma_day_list:
+            df['MA_' + str(ma)] = df['close'].rolling(window=ma, center=False).mean()
         df_new = df.reset_index(drop=True)
         pd.DataFrame.to_csv(df_new, targetdir + os.sep + stock_code + '.csv', encoding='gbk')
         #rownum = df.shape[0]
@@ -85,6 +86,8 @@ for i in range(0, stock_num):
     else:
 
         df_week_sort = df_frames_week_result.sort_values(by='trade_date', ascending=True)
+        for ma in ma_week_list:
+            df_week_sort['MA_' + str(ma)] = df_week_sort['close'].rolling(window=ma, center=False).mean()
         df_week_new = df_week_sort.reset_index(drop=True)
         pd.DataFrame.to_csv(df_week_new, targetdir_week + os.sep + stock_code + '.csv', encoding='gbk')
 
@@ -102,8 +105,8 @@ df_index = frames_result_index.sort_values(by='trade_date', ascending=True)
 df_index_week = df_index_week.sort_values(by='trade_date', ascending=True)
 df_index = df_index.reset_index(drop=True)
 for ma in ma_list:
-    df_index['MA_' + str(ma)] = df_index['close'].rolling(window=ma, center=False, ).mean()
-    df_index_week['ma' + str(ma)] = df_index_week['close'].rolling(window=ma, center=False, ).mean()
+    df_index['MA_' + str(ma)] = df_index['close'].rolling(window=ma, center=False).mean()
+    df_index_week['ma' + str(ma)] = df_index_week['close'].rolling(window=ma, center=False).mean()
 pd.DataFrame.to_csv(df_index, targetdir + os.sep + '399001.SZ.csv', encoding='gbk')
 pd.DataFrame.to_csv(df_index_week, targetdir_week + os.sep + '399001.SZ.csv', encoding='gbk')
 

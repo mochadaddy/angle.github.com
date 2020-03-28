@@ -22,12 +22,12 @@ for fileName in fileNames_week:
         os.remove(fileName)
     except:
         break
-m = n = q = 0
+z = m = n = q = 0
 df_ma_conclude = pd.DataFrame()
 read_dir_files = os.listdir(read_dir)
 for stock_file in read_dir_files:
     q = q + 1
-    df = pd.read_csv(read_dir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'close', 'ma5', 'flag'])
+    df = pd.read_csv(read_dir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'close', 'MA_5', 'flag'])
     df_mid = df[df['trade_date'] >= before_20_year_day]
     df_new = df_mid.reset_index(drop=True)
     row_num = df_new.shape[0]
@@ -41,7 +41,7 @@ for stock_file in read_dir_files:
     # 当标志位从0变为1时，记录买入价格，当标志位从1变为0时，记录卖出价格，从买入卖出价格计算本次买卖收益率
 
 
-        if np.isnan(df_new.iloc[i]['ma5']):
+        if np.isnan(df_new.iloc[i]['MA_5']):
             continue
         else:
             if df_new.iloc[i - 1]['flag'] == 0 and df_new.iloc[i]['flag'] == 1:
@@ -95,7 +95,7 @@ for stock_file in read_dir_files:
     win_ratio = round(float(o) / float((o + p)), 2)
     df_ma_conclude.at[q, 'sz_code'] = stock_file[:9]
     df_ma_conclude.at[q, 'times'] = times
-    df_ma_conclude.at[q, 'times_no_ma5'] = times_no_ma5
+    df_ma_conclude.at[q, 'times_no_MA_5'] = times_no_ma5
     df_ma_conclude.at[q, 'withdrawal'] = max_withdrawal_rate
     df_ma_conclude.at[q, 'strategy_estimate'] = strategy_estimate
     df_ma_conclude.at[q, 'profit_to_loss_ratio'] = profit_to_loss_ratio
@@ -104,9 +104,11 @@ for stock_file in read_dir_files:
     # 比较采用5周均线策略年化收益和未采用策略的优劣
     if times > times_no_ma5:
         m = m + 1
-    else:
+    elif times == times_no_ma5:
+        z = z + 1
+    elif times < times_no_ma5:
         n = n + 1
     pd.DataFrame.to_csv(df_new, target_dir + os.sep + stock_file, encoding='gbk')
 pd.DataFrame.to_csv(df_ma_conclude, target_dir_conclude + os.sep + 'conclude.csv', encoding='gbk')
-print (m, n)
+print (m, n, z)
 
