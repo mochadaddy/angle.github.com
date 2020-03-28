@@ -11,10 +11,10 @@ import stock_class as sc
 import numpy as np
 
 
-read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
-read_dir_rsrs = 'D:/Program Files/tdx/vipdoc/sz/sz_rsrs_beta_cal'
-targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_rsrs_beta_cal'
-parameter_day_period = 18
+read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/week_download'
+read_dir_rsrs = 'D:/Program Files/tdx/vipdoc/sz/sz_rsrs_week_beta_cal'
+target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_rsrs_week_beta_cal'
+parameter_day_period = 4
 b1 = 0
 
 read_dir_files = os.listdir(read_dir)
@@ -35,6 +35,7 @@ for stock_file_download in read_dir_files:
             row_num_rsrs = df_rsrs.shape[0]
             download_date = df_download.iloc[row_num-1]['trade_date']
             rsrs_date = df_rsrs.iloc[row_num_rsrs-1]['trade_date']
+
             if rsrs_date < download_date:
 
                 d_value = row_num - row_num_rsrs - parameter_day_period
@@ -45,16 +46,16 @@ for stock_file_download in read_dir_files:
                     y = 0
                     #row_num_rsrs = df_rsrs.shape[0]
                     for i in range(row_num_rsrs, row_num_rsrs+parameter_day_period):
-                        x = x + df_download.iloc[i]['low']
-                        y = y + df_download.iloc[i]['high']
+                        x = x + df_download.iloc[i]['high']
+                        y = y + df_download.iloc[i]['low']
                     x_mean = x / parameter_day_period
                     y_mean = y / parameter_day_period
                     dinominator = 0
                     numerator = 0
                     df_rsrs_new = pd.DataFrame()
                     for j in range(row_num_rsrs, row_num_rsrs+parameter_day_period):
-                        numerator += (df_download.iloc[j]['low'] - x_mean) * (df_download.iloc[j]['high'] - y_mean)
-                        dinominator += (df_download.iloc[j]['low'] - x_mean) ** 2
+                        numerator += (df_download.iloc[j]['high'] - x_mean) * (df_download.iloc[j]['low'] - y_mean)
+                        dinominator += (df_download.iloc[j]['high'] - x_mean) ** 2
                     b1 = numerator / dinominator
                     df_rsrs_new.at[j-parameter_day_period+1, 'ts_code'] = df_download.iloc[j]['ts_code']
                     df_rsrs_new.at[j-parameter_day_period+1, 'trade_date'] = df_download.iloc[j]['trade_date']
@@ -64,7 +65,8 @@ for stock_file_download in read_dir_files:
                     df_rsrs_new.at[j-parameter_day_period+1, 'beta'] = b1
 
                     rows = df_rsrs_new
-                    pd.DataFrame.to_csv(df_rsrs_new, targetdir + os.sep + stock_file_rsrs,  mode='ab', header=False, encoding='gbk')
+                    #在原csv文件后添加行
+                    pd.DataFrame.to_csv(df_rsrs_new, target_dir + os.sep + stock_file_rsrs,  mode='ab', header=False, encoding='gbk')
                     df_rsrs = pd.read_csv(read_dir_rsrs + os.sep + stock_file_rsrs,
                                           usecols=['ts_code', 'trade_date', 'high', 'low', 'close'])
                     row_num_rsrs = df_rsrs.shape[0]
@@ -84,32 +86,41 @@ for rsrs_diff in read_diff_list:
         continue
     else:
         row_num = df_download.shape[0]
-        df_rsrs = pd.DataFrame(columns=['ts_code', 'trade_date', 'high', 'low', 'close', 'beta'])
-        for k in range(0, row_num - parameter_day_period):
-            i = 0
-            j = 0
-            x = 0
-            y = 0
-            for i in range(0 + k, parameter_day_period + k):
-                x = x + df_download.iloc[i]['low']
-                y = y + df_download.iloc[i]['high']
-            x_mean = x / parameter_day_period
-            y_mean = y / parameter_day_period
-            dinominator = 0
-            numerator = 0
+        if row_num <= parameter_day_period:
+            continue
+        else:
+            df_rsrs = pd.DataFrame(columns=['ts_code', 'trade_date', 'high', 'low', 'close', 'beta'])
+            for k in range(0, row_num - parameter_day_period):
+                i = 0
+                j = 0
+                x = 0
+                y = 0
+                for i in range(0 + k, parameter_day_period + k):
+                    x = x + df_download.iloc[i]['high']
+                    y = y + df_download.iloc[i]['low']
+                x_mean = x / parameter_day_period
+                y_mean = y / parameter_day_period
+                dinominator = 0
+                numerator = 0
 
-            for j in range(0 + k, parameter_day_period + k):
-                numerator += (df_download.iloc[j]['low'] - x_mean) * (df_download.iloc[j]['high'] - y_mean)
-                dinominator += (df_download.iloc[j]['low'] - x_mean) ** 2
-            b1 = numerator / dinominator
-            df_rsrs.at[k, 'ts_code'] = df_download.iloc[i]['ts_code']
-            df_rsrs.at[k, 'trade_date'] = df_download.iloc[i]['trade_date']
-            df_rsrs.at[k, 'high'] = df_download.iloc[i]['high']
-            df_rsrs.at[k, 'low'] = df_download.iloc[i]['low']
-            df_rsrs.at[k, 'close'] = df_download.iloc[i]['close']
-            df_rsrs.at[k, 'beta'] = b1
-            # print b1,df.iloc[i]['trade_date']
-        pd.DataFrame.to_csv(df_rsrs, targetdir + os.sep + rsrs_diff, encoding='gbk')
+                for j in range(0 + k, parameter_day_period + k):
+                    numerator += (df_download.iloc[j]['high'] - x_mean) * (df_download.iloc[j]['low'] - y_mean)
+                    dinominator += (df_download.iloc[j]['high'] - x_mean) ** 2
+                if numerator < 0:
+                    if k == 0:
+                        b1 = 0
+                    else:
+                        b1 = df_rsrs.iloc[k-1]['beta']
+                else:
+                    b1 = numerator / dinominator
+                df_rsrs.at[k, 'ts_code'] = df_download.iloc[i]['ts_code']
+                df_rsrs.at[k, 'trade_date'] = df_download.iloc[i]['trade_date']
+                df_rsrs.at[k, 'high'] = df_download.iloc[i]['high']
+                df_rsrs.at[k, 'low'] = df_download.iloc[i]['low']
+                df_rsrs.at[k, 'close'] = df_download.iloc[i]['close']
+                df_rsrs.at[k, 'beta'] = b1
+                # print b1,df.iloc[i]['trade_date']
+            pd.DataFrame.to_csv(df_rsrs, target_dir + os.sep + rsrs_diff, encoding='gbk')
 
 
 

@@ -21,7 +21,7 @@ last_trade_day_value = last_trade_day.iloc[0]['cal_date']
 
 
 read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return/nhsy.csv'
-read_dir_week = 'D:/Program Files/tdx/vipdoc/sz/sz_week'
+read_dir_week = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fill'
 read_dir_day = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
 target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_simulate'
 fileNames = glob.glob(target_dir + r'\*')
@@ -38,8 +38,8 @@ stock_num = stock_list_5.shape[0]
 for i in range(0, stock_num):
     stock_code = stock_list_5.iloc[i]['ts_code']
     df = pd.read_csv(read_dir_day + os.sep + stock_code + '.csv', usecols=['ts_code', 'trade_date', 'open', 'close',
-                                                                          'pct_chg', 'vol', 'amount', 'MA_5', 'MA_10',
-                                                                          'MA_250'])
+                                                                          'pct_chg', 'vol', 'amount', 'MA_5', 'MA_20',
+                                                                          'MA_60'])
     row_num_day = df.shape[0]
     df = df.iloc[-1:]
     #df = ts.pro_bar(ts_code=stock_code,  adj='hfq', start_date=last_trade_day_value, end_date=last_trade_day_value)

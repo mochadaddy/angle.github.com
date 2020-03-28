@@ -16,8 +16,8 @@ sys_day = sc.get_sys_date()
 #stock_sz_num = stock_list_sz.shape[0]
 stock_analyse_capital = pd.DataFrame(columns=['ts_code', 'year', 'year_annual_return'])
 # print stock_list_sz
-targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return'
-read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
+targetdir = 'D:/Program Files/tdx/vipdoc/sh/sh_tushare_annual_return'
+read_dir = 'D:/Program Files/tdx/vipdoc/sh/sh_tushare/day_download'
 szlistfile = os.listdir(read_dir)
 file_count = 0
 j = 0

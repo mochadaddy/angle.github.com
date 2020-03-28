@@ -18,4 +18,4 @@ import datetime as d
 target_dir_illiq = 'D:/Program Files/tdx/vipdoc/sz/sz_illiq_compare'
 data = pd.read_csv(target_dir_illiq + os.sep + 'illiq.csv')
 data1 = sc.get_nost_stock(data)
-pd.DataFrame.to_csv(data1, target_dir_illiq + os.sep + 'test.csv', encoding='gbk')
+pd.DataFrame.to_csv(data1, target_dir_illiq + os.sep + 'no_st.csv', encoding='gbk')

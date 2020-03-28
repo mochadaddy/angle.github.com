@@ -18,12 +18,12 @@ read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/combine_cap'
 target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_illiq'
 read_dir_illiq = 'D:/Program Files/tdx/vipdoc/sz/sz_illiq'
 target_dir_illiq = 'D:/Program Files/tdx/vipdoc/sz/sz_illiq_compare'
-start_date = '20190716'
-end_date = '20190816'
+start_date = '20190723'
+end_date = '20190823'
 # 取年化收益大于0的股票集合
 stock_list = sc.get_return_rate(0)
 stock_num = stock_list.shape[0]
-'''
+
 # 清除文件
 fileNames_illiq = glob.glob(target_dir + r'\*')
 for fileName in fileNames_illiq:
@@ -31,7 +31,7 @@ for fileName in fileNames_illiq:
         os.remove(fileName)
     except:
         break
-'''
+
 for j in range(0, stock_num):
     stock_code = stock_list.iloc[j]['ts_code']
     if os.path.exists(read_dir + os.sep + stock_code + '.csv') and stock_code != '399001.SZ':
@@ -44,15 +44,15 @@ for j in range(0, stock_num):
         for i in range(0, row_num):
             if str(df_cap.iloc[i]['trade_date']) >= start_date and str(df_cap.iloc[i]['trade_date']) <= end_date:
                 #print i
-                illiq_neutrilize = np.log10(df_cap.iloc[i]['circ_mv'])
+                illiq_neutrilize = np.log10(df_cap.iloc[i]['circ_mv'])*0.1
                 df_stock_illiq.at[i, 'ts_code'] = df_cap.iloc[i]['ts_code']
                 df_stock_illiq.at[i, 'trade_date'] = df_cap.iloc[i]['trade_date']
-                illiq = abs(df_cap.iloc[i]['change'] + df_cap.iloc[i]['high'] - df_cap.iloc[i]['low']) * 1.0 / df_cap.iloc[i][
-                    'amount'] * 10000
+                #illiq = abs(df_cap.iloc[i]['change'] + df_cap.iloc[i]['high'] - df_cap.iloc[i]['low']) * 1.0 / df_cap.iloc[i][ 'amount'] * 10000
+                illiq = (2*(df_cap.iloc[i]['high'] - df_cap.iloc[i]['low'])-abs(df_cap.iloc[i]['change'])) * 1.0 / df_cap.iloc[i]['amount'] * 10000
                 # df.at[i, 'illiq'] = illiq
                 df_stock_illiq.at[i, 'illiq_neu'] = illiq_neutrilize
                 df_stock_illiq.at[i, 'illiq'] = illiq
-                df_stock_illiq.at[i, 'illiq_adjust'] = illiq + illiq_neutrilize
+                df_stock_illiq.at[i, 'illiq_adjust'] = illiq
                 df_stock_illiq['illiq' + str(5)] = df_stock_illiq['illiq_adjust'].rolling(window=5, center=False).mean()
                 df_stock_illiq_new = df_stock_illiq.reset_index(drop=True)
             else:

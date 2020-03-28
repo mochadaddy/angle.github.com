@@ -1,16 +1,20 @@
 # coding: utf-8
-import pymysql as pm
-# 连接数据库 并添加cursor游标
+import numpy as np
 
-conn = pm.connect('127.0.0.1', 'root', 'rootroot', 'stock')
-cursor = conn.cursor()
-print cursor
+import pandas as pd
+import os
+import glob
+import csv
+import stock_class as sc
+import numpy as np
+import time
+from datetime import datetime as dt
+import datetime as d
 
-sql_insert = "select * from stock.stock_test"
-cursor.execute(sql_insert)
-rows = cursor.fetchall()
-for row in rows:
-    print row
 
+pro = sc.get_tocken()
+target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/sz_index'
 
+df = pro.moneyflow_hsgt(start_date='20200101', end_date='20200327')
+print(df)
 

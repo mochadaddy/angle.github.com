@@ -13,10 +13,10 @@ import numpy as np
 # 联接tushare的api接口
 pro = sc.get_tocken()
 yesterday = sc.get_sys_date()
-targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_week'
-targetdir_fill = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fill'
-read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return/nhsy.csv'
-read_dir_week = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/week_download'
+targetdir = 'D:/Program Files/tdx/vipdoc/sh/sh_week'
+targetdir_fill = 'D:/Program Files/tdx/vipdoc/sh/sh_week_fill'
+read_dir = 'D:/Program Files/tdx/vipdoc/sh/sh_tushare_annual_return/nhsy.csv'
+read_dir_week = 'D:/Program Files/tdx/vipdoc/sh/sh_tushare/week_download'
 
 fileNames_week = glob.glob(targetdir + r'\*')
 fileNames_week_fill = glob.glob(targetdir_fill + r'\*')
@@ -51,7 +51,7 @@ for i in range(0, stock_num):
     df_new.loc[mask < 0, 'flag'] = 0
     pd.DataFrame.to_csv(df_new, targetdir + os.sep + stock_code + '.csv', encoding='gbk')
 
-read_dir_sz_week = 'D:/Program Files/tdx/vipdoc/sz/sz_week'
+read_dir_sz_week = 'D:/Program Files/tdx/vipdoc/sh/sh_week'
 read_dir_files = os.listdir(read_dir_sz_week)
 for stock_file in read_dir_files:
     df1 = pd.read_csv(read_dir_sz_week + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'close', 'open',

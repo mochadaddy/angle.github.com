@@ -17,7 +17,7 @@ target_dir_fill = 'D:/Program Files/tdx/vipdoc/sz/sz_ma_20_60_stategy_fill'
 read_dir_annual_return = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return/nhsy.csv'
 fileNames_week = glob.glob(target_dir + r'\*')
 fileNames_week_fill = glob.glob(target_dir_fill + r'\*')
-'''
+
 for fileName in fileNames_week:
     try:
         os.remove(fileName)
@@ -45,7 +45,7 @@ for i in range(0, stock_num):
     df_new.loc[mask > 0, 'flag'] = 1
     df_new.loc[mask < 0, 'flag'] = 0
     pd.DataFrame.to_csv(df_new, target_dir + os.sep + stock_code + '.csv', encoding='gbk')
-'''
+
 read_dir_ma_20_60 = 'D:/Program Files/tdx/vipdoc/sz/sz_ma_20_60_stategy'
 read_dir_files = os.listdir(read_dir_ma_20_60)
 

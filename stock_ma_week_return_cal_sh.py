@@ -11,9 +11,9 @@ import stock_class as sc
 
 
 
-target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_return'
-read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fill'
-target_dir_conclude = 'D:/Program Files/tdx/vipdoc/sz/sz_week_conclude'
+target_dir = 'D:/Program Files/tdx/vipdoc/sh/sh_week_return'
+read_dir = 'D:/Program Files/tdx/vipdoc/sh/sh_week_fill'
+target_dir_conclude = 'D:/Program Files/tdx/vipdoc/sh/sh_week_conclude'
 fileNames_week = glob.glob(target_dir + r'\*')
 before_20_year_day = sc.get_20_years_day()
 

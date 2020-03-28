@@ -18,8 +18,8 @@ read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
 target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_illiq'
 read_dir_illiq = 'D:/Program Files/tdx/vipdoc/sz/sz_illiq'
 target_dir_illiq = 'D:/Program Files/tdx/vipdoc/sz/sz_illiq_compare'
-start_date = '20190805'
-end_date = '20190809'
+start_date = '20190811'
+end_date = '20190816'
 stock_list = sc.get_return_rate(0)
 stock_num = stock_list.shape[0]
 
