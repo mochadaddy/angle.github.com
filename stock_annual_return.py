@@ -25,7 +25,7 @@ for stock_file in szlistfile:
     # print stock_file
     file_count = file_count + 1
     df = pd.read_csv(read_dir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'open', 'close', 'pct_chg',
-                                                               'vol', 'amount', 'MA_5', 'MA_20', 'MA_60'])
+                                                               'vol', 'amount', 'MA_20'])
 
 
     row_num = df.shape[0]

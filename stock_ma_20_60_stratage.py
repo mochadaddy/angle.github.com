@@ -35,7 +35,7 @@ stock_num = stock_list_20_60.shape[0]
 for i in range(0, stock_num):
     stock_code = stock_list_20_60.iloc[i]['ts_code']
     df = pd.read_csv(read_dir + os.sep + stock_code + '.csv', usecols=['ts_code', 'trade_date', 'open', 'close',
-                                                                       'pct_chg', 'vol', 'amount', 'MA_5', 'MA_20', 'MA_60'])
+                                                                       'pct_chg', 'vol', 'amount', 'MA_20'])
     df_aes = df.sort_values('trade_date', ascending=True)
     df_new = df_aes.reset_index(drop=True)
     # 当60天均线高于20天均线时，置flag标志位为1，当60天均线小于20天均线时，置flag标志位为0
@@ -51,7 +51,7 @@ read_dir_files = os.listdir(read_dir_ma_20_60)
 
 for stock_file in read_dir_files:
     df1 = pd.read_csv(read_dir_ma_20_60 + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'close', 'open',
-                                                                       'pct_chg', 'vol', 'amount', 'MA_5', 'MA_20', 'MA_60', 'flag'])
+                                                                       'pct_chg', 'vol', 'amount', 'MA_20', 'flag'])
     day_trade_num = df1.shape[0]
     df1['money_cal'] = None
     for j in range(0, day_trade_num):

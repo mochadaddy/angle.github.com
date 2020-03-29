@@ -14,7 +14,7 @@ count_drop = 0
 count_stand_on = 0
 count_stand_under = 0
 for stock_file in szlistfile:
-    stock_list = pd.read_csv(read_dir_week + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'close', 'ma5',
+    stock_list = pd.read_csv(read_dir_week + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'close', 'MA_5',
                                                                            'flag', 'money_cal', 'return_rate'])
     row_num = stock_list.shape[0]
     if (stock_list.iloc[row_num - 1]['flag'] == 1) and (stock_list.iloc[row_num - 2]['flag'] == 0):

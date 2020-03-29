@@ -92,7 +92,6 @@ for i in range(0, stock_num):
         pd.DataFrame.to_csv(df_week_new, targetdir_week + os.sep + stock_code + '.csv', encoding='gbk')
 
 
-
 # 获取深证成分指数日线数据
 df_index_1 = pro.index_daily(ts_code='399001.SZ', start_date=startdate, end_date=midday)
 df_index_2 = pro.index_daily(ts_code='399001.SZ', start_date=midday, end_date=formatted_yesterday)
@@ -104,9 +103,12 @@ df_index_week =pro.index_weekly(ts_code='399001.SZ', start_date=startdate, end_d
 df_index = frames_result_index.sort_values(by='trade_date', ascending=True)
 df_index_week = df_index_week.sort_values(by='trade_date', ascending=True)
 df_index = df_index.reset_index(drop=True)
-for ma in ma_list:
+for ma in ma_day_list:
     df_index['MA_' + str(ma)] = df_index['close'].rolling(window=ma, center=False).mean()
-    df_index_week['ma' + str(ma)] = df_index_week['close'].rolling(window=ma, center=False).mean()
+    #df_index_week['MA_' + str(ma)] = df_index_week['close'].rolling(window=ma, center=False).mean()
+for ma in ma_week_list:
+    #df_index['MA_' + str(ma)] = df_index['close'].rolling(window=ma, center=False).mean()
+    df_index_week['MA_' + str(ma)] = df_index_week['close'].rolling(window=ma, center=False).mean()
 pd.DataFrame.to_csv(df_index, targetdir + os.sep + '399001.SZ.csv', encoding='gbk')
 pd.DataFrame.to_csv(df_index_week, targetdir_week + os.sep + '399001.SZ.csv', encoding='gbk')
 

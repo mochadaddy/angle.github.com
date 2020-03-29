@@ -22,7 +22,7 @@ for fileName in fileNames_ma_20_60:
     except:
         break
 
-m = n = q = 0
+z = m = n = q = 0
 df_ma_20_60_conclude = pd.DataFrame()
 read_dir_files = os.listdir(read_dir)
 for stock_file in read_dir_files:
@@ -101,7 +101,9 @@ for stock_file in read_dir_files:
         df_ma_20_60_conclude.at[q, 'win_ratio'] = win_ratio
     if times > times_no_ma5:
         m = m + 1
-    else:
+    elif times == times_no_ma5:
+        z = z + 1
+    elif times < times_no_ma5:
         n = n + 1
     pd.DataFrame.to_csv(df_new, target_dir + os.sep + stock_file, encoding='gbk')
 pd.DataFrame.to_csv(df_ma_20_60_conclude, target_dir_conclude + os.sep + 'conclude.csv', encoding='gbk')
