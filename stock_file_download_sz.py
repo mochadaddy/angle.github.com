@@ -46,11 +46,11 @@ for i in range(0, stock_num):
     df_week_2 = pd.DataFrame()
     for _ in range(3):
         try:
-            df_1 = ts.pro_bar(ts_code=stock_code, freq='D', adj='hfq', start_date=startdate, end_date=midday)
-            df_2 = ts.pro_bar(ts_code=stock_code, freq='D', adj='hfq', start_date=midday, end_date=formatted_yesterday)
+            df_1 = ts.pro_bar(ts_code=stock_code, freq='D', adj='qfq', start_date=startdate, end_date=midday)
+            df_2 = ts.pro_bar(ts_code=stock_code, freq='D', adj='qfq', start_date=midday, end_date=formatted_yesterday)
             if weekday == 5 or weekday == 6:
-                df_week_1 = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=startdate, end_date=midday)
-                df_week_2 = ts.pro_bar(ts_code=stock_code, freq='W', adj='hfq', start_date=midday, end_date=formatted_yesterday)
+                df_week_1 = ts.pro_bar(ts_code=stock_code, freq='W', adj='qfq', start_date=startdate, end_date=midday)
+                df_week_2 = ts.pro_bar(ts_code=stock_code, freq='W', adj='qfq', start_date=midday, end_date=formatted_yesterday)
 
                 #print df_week
             #else:
@@ -70,7 +70,7 @@ for i in range(0, stock_num):
         #df_frames_result = pd.concat(frames)
         df = df_frames_result.sort_values(by='trade_date', ascending=True)
         for ma in ma_day_list:
-            df['MA_' + str(ma)] = df['close'].rolling(window=ma, center=False).mean()
+            df['MA_' + str(ma)] = round(df['close'].rolling(window=ma, center=False).mean(), 2)
         df_new = df.reset_index(drop=True)
         pd.DataFrame.to_csv(df_new, targetdir + os.sep + stock_code + '.csv', encoding='gbk')
         #rownum = df.shape[0]
@@ -87,7 +87,7 @@ for i in range(0, stock_num):
 
         df_week_sort = df_frames_week_result.sort_values(by='trade_date', ascending=True)
         for ma in ma_week_list:
-            df_week_sort['MA_' + str(ma)] = df_week_sort['close'].rolling(window=ma, center=False).mean()
+            df_week_sort['MA_' + str(ma)] = round(df_week_sort['close'].rolling(window=ma, center=False).mean() ,2)
         df_week_new = df_week_sort.reset_index(drop=True)
         pd.DataFrame.to_csv(df_week_new, targetdir_week + os.sep + stock_code + '.csv', encoding='gbk')
 
@@ -99,10 +99,14 @@ frames_index = [df_index_2, df_index_1]
 frames_result_index = pd.concat(frames_index)
 
 
-df_index_week =pro.index_weekly(ts_code='399001.SZ', start_date=startdate, end_date=formatted_yesterday, ma=[5])
+df_index_week_1 =pro.index_weekly(ts_code='399001.SZ', start_date=startdate, end_date=midday)
+df_index_week_2 =pro.index_weekly(ts_code='399001.SZ', start_date=midday, end_date=formatted_yesterday)
+frames_index_week = [df_index_2, df_index_1]
+frames_result_index_week = pd.concat(frames_index_week)
 df_index = frames_result_index.sort_values(by='trade_date', ascending=True)
-df_index_week = df_index_week.sort_values(by='trade_date', ascending=True)
+df_index_week = frames_result_index_week.sort_values(by='trade_date', ascending=True)
 df_index = df_index.reset_index(drop=True)
+df_index_week = df_index_week.reset_index(drop=True)
 for ma in ma_day_list:
     df_index['MA_' + str(ma)] = df_index['close'].rolling(window=ma, center=False).mean()
     #df_index_week['MA_' + str(ma)] = df_index_week['close'].rolling(window=ma, center=False).mean()

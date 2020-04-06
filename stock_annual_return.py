@@ -17,22 +17,21 @@ sys_day = sc.get_sys_date()
 stock_analyse_capital = pd.DataFrame(columns=['ts_code', 'year', 'year_annual_return'])
 # print stock_list_sz
 targetdir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare_annual_return'
-read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/day_download'
+read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/daily_basic'
 szlistfile = os.listdir(read_dir)
 file_count = 0
 j = 0
 for stock_file in szlistfile:
     # print stock_file
     file_count = file_count + 1
-    df = pd.read_csv(read_dir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'open', 'close', 'pct_chg',
-                                                               'vol', 'amount', 'MA_20'])
+    df = pd.read_csv(read_dir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'total_mv'])
 
 
     row_num = df.shape[0]
     if row_num >= 500:
         year_num = round(row_num*1.00 / 250, 2)
-        return_sum = df.iloc[row_num - 1]['close'] - df.iloc[0]['close']
-        annual_return = round(return_sum / df.iloc[0]['close']/year_num, 2)
+        return_sum = round((df.iloc[row_num - 1]['total_mv'] - df.iloc[0]['total_mv']), 2)/df.iloc[0]['total_mv']
+        annual_return = round(return_sum / year_num, 2)
         code = df.iloc[0]['ts_code']
         end_date = df.iloc[row_num-1]['trade_date']
         #print (code, end_date, annual_return, return_sum, row_num, year_num,)
