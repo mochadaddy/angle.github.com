@@ -15,6 +15,6 @@ import datetime as d
 pro = sc.get_tocken()
 target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_tushare/sz_index'
 
-df = pro.moneyflow_hsgt(start_date='20200101', end_date='20200327')
+df = pro.moneyflow_hsgt(start_date='20200201', end_date='20200409')
 print(df)
 

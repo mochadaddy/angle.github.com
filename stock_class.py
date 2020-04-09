@@ -23,9 +23,9 @@ def get_sys_date():
     return formatted_yestorday_int
 
 #取20年前的一天
-def get_20_years_day():
+def get_15_years_day():
     today = dt.date.today()
-    yesterday = today - dt.timedelta(days=7300)
+    yesterday = today - dt.timedelta(days=5475)
     formatted_yesterday = int(yesterday.strftime('%Y%m%d'))
     return formatted_yesterday
 

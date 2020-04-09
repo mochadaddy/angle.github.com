@@ -46,6 +46,7 @@ for i in range(0, stock_num):
     # 当周线收盘价高于5周均线时，置flag标志位为1，当周线收盘价低于5周均线时，置flag标志位为0
     df_new['flag'] = ''
     df_new['return'] = ''
+    df_new['close'] = round(df_new['close'], 2)
     mask = df_new['close'] - df_new['MA_5']
     df_new.loc[mask > 0, 'flag'] = 1
     df_new.loc[mask < 0, 'flag'] = 0

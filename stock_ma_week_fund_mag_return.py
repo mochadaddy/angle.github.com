@@ -11,11 +11,13 @@ import stock_class as sc
 
 
 
-target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_return'
+target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fund_mag_return'
 read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fill'
 target_dir_conclude = 'D:/Program Files/tdx/vipdoc/sz/sz_week_conclude'
 fileNames_week = glob.glob(target_dir + r'\*')
 before_20_year_day = sc.get_15_years_day()
+buy_stock_num = 500
+negtive_num = 1
 
 for fileName in fileNames_week:
     try:
@@ -46,69 +48,78 @@ for stock_file in read_dir_files:
         else:
             if df_new.iloc[i - 1]['flag'] == 0 and df_new.iloc[i]['flag'] == 1:
                 buy_price = df_new.iloc[i]['close']
-                k = k + 1
+
+                buy_capical = buy_price*buy_stock_num*negtive_num
+                df_new.at[i, 'buy_price'] = buy_capical
+                #k = k + 1
                 # 初始化买入价格，历史最高价格，回撤比例
-                if k == 1:
-                    df_new.at[i, 'money_cal'] = df_new.iloc[i]['close']
-                    buy_price_init = df_new.iloc[i]['close']
-                    max_price = buy_price_init
-                    max_withdrawal_rate = 0
+                #if k == 1:
+                    #df_new.at[i, 'money_cal'] = df_new.iloc[i]['close']
+                    #buy_price_init = df_new.iloc[i]['close']
+                    #max_price = buy_price_init
+                    #max_withdrawal_rate = 0
             if df_new.iloc[i - 1]['flag'] == 1 and df_new.iloc[i]['flag'] == 0:
                 if buy_price is None:
                     continue
                 else:
                     sell_price = df_new.iloc[i]['close']
+                    sell_capital = sell_price * buy_stock_num * negtive_num
+                    df_new.at[i, 'sell_price'] = sell_capital
                     return_rate = (sell_price - buy_price) / buy_price
                     if return_rate > 0:
+                        negtive_num = 1
                         o = o + 1
                         positive_return = return_rate + positive_return
 
                     if return_rate < 0:
+                        negtive_num = negtive_num + 1
                         p = p + 1
                         negative_return = return_rate + negative_return
 
                     df_new.at[i, 'return_rate'] = return_rate
+
                     j = i
-                    while pd.isnull(df_new.iloc[j]['money_cal']):
+                    while pd.isnull(df_new.iloc[j]['buy_price']):
                         j = j - 1
-                    df_new.at[i, 'money_cal'] = df_new.iloc[j]['money_cal'] * return_rate + df_new.iloc[j]['money_cal']
+                    #df_new.at[i, 'money_cal'] = df_new.iloc[j]['money_cal'] * return_rate + df_new.iloc[j]['money_cal']
+                    df_new.at[i, 'return_money'] = df_new.iloc[i]['sell_price'] - df_new.iloc[j]['buy_price']
                     # 取得当前价格之前的最高价格
-                    if df_new.iloc[i]['money_cal'] > max_price:
-                        max_price = df_new.iloc[i]['money_cal']
+                    #if df_new.iloc[i]['money_cal'] > max_price:
+                     #   max_price = df_new.iloc[i]['money_cal']
                     # 计算最大回撤比例
-                    withdrawal_rate = 1 - (df_new.iloc[i]['money_cal'] / max_price)
+                    #withdrawal_rate = 1 - (df_new.iloc[i]['money_cal'] / max_price)
                     # 比较所有的回撤比例，取得最大的回撤比例
-                    if max_withdrawal_rate < withdrawal_rate:
-                        max_withdrawal_rate = round(withdrawal_rate, 4)
+                    #if max_withdrawal_rate < withdrawal_rate:
+                     #   max_withdrawal_rate = round(withdrawal_rate, 4)
                     # 计算策略年化收益率及资金曲线和股票本身年化收益率
-                    times = round((df_new.iloc[i]['money_cal']-buy_price_init)/buy_price_init/year_num, 2)
-                    times_no_ma5 = round((df_new.iloc[i]['close']-buy_price_init)/buy_price_init/year_num, 2)
+                    #times = round((df_new.iloc[i]['money_cal']-buy_price_init)/buy_price_init/year_num, 2)
+                    #times_no_ma5 = round((df_new.iloc[i]['close']-buy_price_init)/buy_price_init/year_num, 2)
     # 评价策略优劣
-    if max_withdrawal_rate == 0:
-        continue
-    else:
-        strategy_estimate = round(times/(max_withdrawal_rate*100), 4)
+    #if max_withdrawal_rate == 0:
+     #   continue
+    #else:
+     #   strategy_estimate = round(times/(max_withdrawal_rate*100), 4)
     # 计算盈亏收益比
-    positive_return_average = positive_return / o
-    negative_return_average = negative_return / p
-    profit_to_loss_ratio = round(positive_return_average/abs(negative_return_average), 2)
-    win_ratio = round(float(o) / float((o + p)), 2)
-    df_ma_conclude.at[q, 'sz_code'] = stock_file[:9]
-    df_ma_conclude.at[q, 'times'] = times
-    df_ma_conclude.at[q, 'times_no_MA_5'] = times_no_ma5
-    df_ma_conclude.at[q, 'withdrawal'] = max_withdrawal_rate
-    df_ma_conclude.at[q, 'strategy_estimate'] = strategy_estimate
-    df_ma_conclude.at[q, 'profit_to_loss_ratio'] = profit_to_loss_ratio
-    df_ma_conclude.at[q, 'win_ratio'] = win_ratio
+    #positive_return_average = positive_return / o
+    #negative_return_average = negative_return / p
+    #profit_to_loss_ratio = round(positive_return_average/abs(negative_return_average), 2)
+    #win_ratio = round(float(o) / float((o + p)), 2)
+    #df_ma_conclude.at[q, 'sz_code'] = stock_file[:9]
+    #df_ma_conclude.at[q, 'times'] = times
+    #df_ma_conclude.at[q, 'times_no_MA_5'] = times_no_ma5
+    #df_ma_conclude.at[q, 'withdrawal'] = max_withdrawal_rate
+    #df_ma_conclude.at[q, 'strategy_estimate'] = strategy_estimate
+    #df_ma_conclude.at[q, 'profit_to_loss_ratio'] = profit_to_loss_ratio
+    #df_ma_conclude.at[q, 'win_ratio'] = win_ratio
     #print (stock_file, times, times_no_ma5, max_withdrawal_rate, strategy_estimate, profit_to_loss_ratio, win_ratio)
     # 比较采用5周均线策略年化收益和未采用策略的优劣
-    if times > times_no_ma5:
-        m = m + 1
-    elif times == times_no_ma5:
-        z = z + 1
-    elif times < times_no_ma5:
-        n = n + 1
+    #if times > times_no_ma5:
+     #   m = m + 1
+    #elif times == times_no_ma5:
+     #   z = z + 1
+    #elif times < times_no_ma5:
+     #   n = n + 1
     pd.DataFrame.to_csv(df_new, target_dir + os.sep + stock_file, encoding='gbk')
-pd.DataFrame.to_csv(df_ma_conclude, target_dir_conclude + os.sep + 'conclude.csv', encoding='gbk')
-print (m, n, z)
+#pd.DataFrame.to_csv(df_ma_conclude, target_dir_conclude + os.sep + 'conclude.csv', encoding='gbk')
+#print (m, n, z)
 
