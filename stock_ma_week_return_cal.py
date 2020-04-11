@@ -15,7 +15,7 @@ target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_return'
 read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_week_fill'
 target_dir_conclude = 'D:/Program Files/tdx/vipdoc/sz/sz_week_conclude'
 fileNames_week = glob.glob(target_dir + r'\*')
-before_20_year_day = sc.get_15_years_day()
+before_15_year_day = sc.get_15_years_day()
 
 for fileName in fileNames_week:
     try:
@@ -28,7 +28,7 @@ read_dir_files = os.listdir(read_dir)
 for stock_file in read_dir_files:
     q = q + 1
     df = pd.read_csv(read_dir + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'close', 'MA_5', 'flag'])
-    df_mid = df[df['trade_date'] >= before_20_year_day]
+    df_mid = df[df['trade_date'] >= before_15_year_day]
     df_new = df_mid.reset_index(drop=True)
     row_num = df_new.shape[0]
     buy_price = None

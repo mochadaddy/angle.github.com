@@ -38,8 +38,8 @@ stock_num = stock_list_5.shape[0]
 for i in range(0, stock_num):
     stock_code = stock_list_5.iloc[i]['ts_code']
     df = pd.read_csv(read_dir_day + os.sep + stock_code + '.csv', usecols=['ts_code', 'trade_date', 'open', 'close',
-                                                                          'pct_chg', 'vol', 'amount', 'MA_5', 'MA_20',
-                                                                          'MA_60'])
+                                                                          'pct_chg', 'vol', 'amount', 'MA_20'
+                                                                          ])
     row_num_day = df.shape[0]
     df = df.iloc[-1:]
     #df = ts.pro_bar(ts_code=stock_code,  adj='hfq', start_date=last_trade_day_value, end_date=last_trade_day_value)
@@ -48,7 +48,7 @@ for i in range(0, stock_num):
     for stock_file in read_dir_week_files:
         if stock_file == (stock_code + '.csv'):
             df_week = pd.read_csv(read_dir_week + os.sep + stock_file, usecols=['ts_code', 'trade_date', 'close', 'open'
-                , 'pct_chg', 'vol', 'amount', 'ma5', 'flag'])
+                , 'pct_chg', 'vol', 'amount', 'MA_5', 'flag'])
             df_union = pd.concat([df_week, df_day], axis=0, sort=False)
             df_union_new = df_union.reset_index(drop=True)
             row_num = df_union_new.shape[0]
@@ -60,8 +60,8 @@ for i in range(0, stock_num):
                 row_num = row_num - 1
             ma5 = round(week_ma_5/5, 2)
             row_num_sim = df_union_new.shape[0]
-            df_union_new.at[row_num_sim-1, 'ma5'] = ma5
-            mask = df_union_new.iloc[row_num_sim - 1]['close'] - df_union_new.iloc[row_num_sim - 1]['ma5']
+            df_union_new.at[row_num_sim-1, 'MA_5'] = ma5
+            mask = df_union_new.iloc[row_num_sim - 1]['close'] - df_union_new.iloc[row_num_sim - 1]['MA_5']
             if mask > 0:
                 df_union_new.at[row_num_sim - 1, 'flag'] = 1
             elif mask < 0:
@@ -69,7 +69,7 @@ for i in range(0, stock_num):
             else:
                 continue
             if (df_union_new.iloc[row_num_sim- 1]['flag'] == 1) and (df_union_new.iloc[row_num_sim - 2]['flag'] == 0):
-                print stock_code
+                print(stock_code)
 
             pd.DataFrame.to_csv(df_union_new, target_dir + os.sep + stock_code + '.csv', encoding='gbk')
 

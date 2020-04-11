@@ -32,6 +32,7 @@ for i in range(0, stock_num):
 
     frames = [df2_basic, df1_basic]
     df_frames_result = pd.concat(frames)
+    df_frames_result = df_frames_result.reset_index(drop=True)
     if df_frames_result.empty:
        continue
     else:

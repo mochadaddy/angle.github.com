@@ -14,7 +14,7 @@ target_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_ma_20_60_return'
 read_dir = 'D:/Program Files/tdx/vipdoc/sz/sz_ma_20_60_stategy_fill'
 target_dir_conclude = 'D:/Program Files/tdx/vipdoc/sz/sz_ma_20_60_conclude'
 fileNames_ma_20_60 = glob.glob(target_dir + r'\*')
-before_20_year_day = sc.get_20_years_day()
+before_20_year_day = sc.get_15_years_day()
 
 for fileName in fileNames_ma_20_60:
     try:
@@ -107,4 +107,4 @@ for stock_file in read_dir_files:
         n = n + 1
     pd.DataFrame.to_csv(df_new, target_dir + os.sep + stock_file, encoding='gbk')
 pd.DataFrame.to_csv(df_ma_20_60_conclude, target_dir_conclude + os.sep + 'conclude.csv', encoding='gbk')
-print (m, n)
+print (m, n, z)
